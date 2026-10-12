@@ -6,13 +6,17 @@ import Address from '../models/Address.js'
 
 
 
-// place order  createOrder
+// place order createOrder
 const placeOrder = async (req, res) => {
+	const userId = req.userId || req.user?.id || req.user?._id;
+	const { addressId } = req.body;
 
-	const { userId, addressId } = req.body;
+	if (!userId) {
+		return res.status(401).json({ message: "Unauthorized", success: false, error: true });
+	}
 
-	if (!userId || !addressId) {
-		return res.status(400).json({ message: "User ID and address ID are required" })
+	if (!addressId) {
+		return res.status(400).json({ message: "Address ID is required", success: false, error: true });
 	}
 
 	try {

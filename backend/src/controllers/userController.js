@@ -668,29 +668,44 @@ if(!verifyToken){
 
 
 
-//get login user details
-export async function userDetails(request,response){
+// get login user details
+export async function userDetails(request, response) {
     try {
-        const userId  = request.userId
+        const userId = request.userId || request.user?.id || request.user?._id;
 
-        console.log(userId)
+        if (!userId) {
+            return response.status(401).json({
+                message: "Unauthorized",
+                error: true,
+                success: false
+            });
+        }
 
-        const user = await UserModel.findById(userId).select('-password -refresh_token')
+        const user = await User.findById(userId).select('-password -refreshToken');
+
+        if (!user) {
+            return response.status(404).json({
+                message: "User not found",
+                error: true,
+                success: false
+            });
+        }
 
         return response.json({
-            message : 'user details',
-            data : user,
-            error : false,
-            success : true
-        })
+            message: 'user details',
+            data: user,
+            error: false,
+            success: true
+        });
     } catch (error) {
         return response.status(500).json({
-            message : "Something is wrong",
-            error : true,
-            success : false
-        })
+            message: error.message || "Something is wrong",
+            error: true,
+            success: false
+        });
     }
 }
+
 
 
 export {

@@ -1,17 +1,14 @@
-import express from 'express'
+import express from 'express';
+const router = express.Router();
+import { addTocart, removeItem, updateQuantity, getCartByUserId } from "../controllers/CartController.js";
+import { auth } from "../Middleware/authMiddleware.js";
 
-const router=express.Router();
-import{addTocart,removeItem,updateQuantity,getCartByUserId} from "../controllers/CartController.js"
-// import protect from "../Middleware/authMiddleware.js"
+// Protected user routes (userId derived from auth token)
+router.post("/add", auth, addTocart);
+router.post("/remove", auth, removeItem);
+router.post("/update", auth, updateQuantity);
 
+// Cart retrieval by userId
+router.get("/:userId", getCartByUserId);
 
-// Routes
-router.post("/add",addTocart);
-// router.delete("/remove",removeItem);
-// we are not deleting just removing/updating the item
-router.post("/remove",removeItem);
-router.post("/update",updateQuantity);
-router.get("/:userId",getCartByUserId);
-
-
-export default router;
+export default router;

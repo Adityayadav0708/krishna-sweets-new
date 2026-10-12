@@ -1,6 +1,5 @@
 import express from "express";
-const router=express.Router();
-
+const router = express.Router();
 
 import {
   createProduct,
@@ -9,11 +8,15 @@ import {
   updateProduct,
   deleteProduct,
 } from "../controllers/productController.js";
+import { auth, isAdmin } from "../Middleware/authMiddleware.js";
 
-router.post("/add",createProduct);
-router.get("/",getAllProducts);
-router.get("/:id",getProductById);
-// update product use put
-router.put("/update/:id",updateProduct);
-router.delete("/delete/:id",deleteProduct);
-export default router;
+// Public catalog routes
+router.get("/", getAllProducts);
+router.get("/:id", getProductById);
+
+// Protected admin routes
+router.post("/add", auth, isAdmin, createProduct);
+router.put("/update/:id", auth, isAdmin, updateProduct);
+router.delete("/delete/:id", auth, isAdmin, deleteProduct);
+
+export default router;

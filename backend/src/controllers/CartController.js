@@ -5,113 +5,108 @@ import Cart from "../models/Cart.js";
 // Add items to Cart
 const addTocart = async (req, res) => {
     try {
-        // when we add item to cart we need two info {UserId , Product Id}
-        const { userId, productId } = req.body;
-        //check user cart in db with same user id
+        // Derive userId securely from authenticated user session
+        const userId = req.userId || req.user?.id || req.user?._id;
+        const { productId } = req.body;
+
+        if (!userId) {
+            return res.status(401).json({ message: "Unauthorized", success: false, error: true });
+        }
+
+        if (!productId) {
+            return res.status(400).json({ message: "Product ID is required", success: false, error: true });
+        }
+
+        // Check user cart in db with same user id
         let cart = await Cart.findOne({ userId });
 
-
-        //If this user doesn't already have a cart, create a new one.
+        // If this user doesn't already have a cart, create a new one.
         if (!cart) {
-            cart = new Cart(
-                {
-                    userId,
-
-                    // product in cart
-                    items:
-                        [
-                            { productId, quantity: 1 }
-                        ]
-                })
-        }
-        else {
-
-            //Check if this product(item) is already in the cart
-            //But productId coming from frontend is normally a string:
+            cart = new Cart({
+                userId,
+                items: [{ productId, quantity: 1 }]
+            });
+        } else {
+            // Check if this product is already in the cart
             const item = cart.items.find((item) => item.productId.toString() === productId);
 
-            // product already exist then increse quantity
             if (item) {
                 item.quantity += 1;
-
-            }
-            // agr product nhi hai to add new item to cart
-            else {
-                cart.items.push({ productId, quantity: 1 })
+            } else {
+                cart.items.push({ productId, quantity: 1 });
             }
         }
-        // save cars chnages to the mongodb . Until this line, you're modifying the Mongoose object in memory.
+
         await cart.save();
         res.json({ message: "Item added to cart", cart });
-    }
-    catch (error) {
-        console.log(error);
+    } catch (error) {
+        console.error("Add to cart error:", error);
         res.status(500).json({ message: "Server error" });
     }
-}
+};
 
-
-
-//remove item from cart
+// Remove item from cart
 const removeItem = async (req, res) => {
     try {
+        const userId = req.userId || req.user?.id || req.user?._id;
+        const { productId } = req.body;
 
-        const { userId, productId } = req.body;
-        // find user cart
-        let cart = await Cart.findOne({ userId });
-
-        // if cart not found
-        if (!cart) {
-            return res.status(404).json({ message: "cart not found" });
+        if (!userId) {
+            return res.status(401).json({ message: "Unauthorized", success: false, error: true });
         }
 
-        // remove item from cart
+        if (!productId) {
+            return res.status(400).json({ message: "Product ID is required", success: false, error: true });
+        }
 
-        //.filter() keeps everything that satisfies: **(keep if true)**
-        //So it removes the item whose productId matches the one we want to delete.
+        let cart = await Cart.findOne({ userId });
+        if (!cart) {
+            return res.status(404).json({ message: "Cart not found" });
+        }
+
         cart.items = cart.items.filter((item) => item.productId.toString() !== productId);
 
-
-
-        // save changes
         await cart.save();
         res.json({ message: "Item removed from cart", cart });
-
+    } catch (err) {
+        console.error("Remove from cart error:", err);
+        return res.status(500).json({ message: "Server Error", err });
     }
-    catch (err) {
-        return res.status(500).json({ message: "Server Error", err })
+};
 
-    }
-}
-
-// update item in cart
+// Update item quantity in cart
 const updateQuantity = async (req, res) => {
     try {
-        const { userId, productId, quantity } = req.body;
+        const userId = req.userId || req.user?.id || req.user?._id;
+        const { productId, quantity } = req.body;
+
+        if (!userId) {
+            return res.status(401).json({ message: "Unauthorized", success: false, error: true });
+        }
+
+        if (!productId || quantity === undefined) {
+            return res.status(400).json({ message: "Product ID and quantity are required", success: false, error: true });
+        }
+
         let cart = await Cart.findOne({ userId });
         if (!cart) {
-            return res.status(404).json({ message: "cart not found" });
+            return res.status(404).json({ message: "Cart not found" });
         }
-        // find item in cart
-        const item = cart.items.find(
-            item => item.productId.toString() === productId
-        )
-        // if item not found
+
+        const item = cart.items.find(item => item.productId.toString() === productId);
         if (!item) {
-            return res.status(404).json({ message: "item not found" })
+            return res.status(404).json({ message: "Item not found in cart" });
         }
-        // update quantity
+
         item.quantity = quantity;
 
-        // save changes
-        await cart.save()
-        res.json({ message: "quantity updated successfully", cart });
+        await cart.save();
+        res.json({ message: "Quantity updated successfully", cart });
+    } catch (err) {
+        console.error("Update quantity error:", err);
+        return res.status(500).json({ message: "Server error", err });
     }
-    catch (err) {
-        return res.status(500).json({ message: "server error", err })
-    }
-
-}
+};
 
 // get cart by user Id 
 
