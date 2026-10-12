@@ -116,6 +116,112 @@
 }
 
 .orderButton:hover { background: var(--color-maroon-900); transform: translateY(-1px); }
+
+.userMenu {
+  position: relative;
+}
+
+.userBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.75rem;
+  border-radius: var(--radius-pill);
+  background: rgba(129, 93, 32, 0.08);
+  color: var(--color-maroon-900);
+  font-size: 0.76rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background var(--transition);
+}
+
+.userBtn:hover {
+  background: rgba(129, 93, 32, 0.16);
+}
+
+.adminLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.45rem 0.85rem;
+  border-radius: var(--radius-pill);
+  background: linear-gradient(135deg, var(--color-gold-500, #c99738) 0%, #a06e18 100%);
+  color: #ffffff;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  box-shadow: 0 2px 6px rgba(160, 110, 24, 0.25);
+  transition: transform var(--transition);
+}
+
+.adminLink:hover {
+  transform: translateY(-1px);
+}
+
+.dropdown {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  width: 13rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(129, 93, 32, 0.18);
+  background: #ffffff;
+  box-shadow: 0 12px 32px rgba(45, 20, 15, 0.16);
+  padding: 0.4rem;
+  z-index: 50;
+  animation: fadeIn 0.18s ease-out;
+}
+
+.dropdownHeader {
+  padding: 0.6rem 0.75rem 0.45rem;
+  border-bottom: 1px solid rgba(129, 93, 32, 0.08);
+  margin-bottom: 0.3rem;
+}
+
+.dropdownName {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--color-maroon-900);
+}
+
+.dropdownRole {
+  font-size: 0.68rem;
+  color: var(--color-gold-600);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 700;
+}
+
+.dropdownItem {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  padding: 0.55rem 0.75rem;
+  border-radius: 0.45rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--color-charcoal-800);
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.dropdownItem:hover {
+  background: rgba(129, 93, 32, 0.08);
+  color: var(--color-maroon-900);
+}
+
+.logoutItem {
+  color: #9b1c1c;
+}
+
+.logoutItem:hover {
+  background: #fdf2f2;
+  color: #9b1c1c;
+}
+
 .menuButton { display: none; }
 .mobileMenu { display: none; }
 

@@ -298,8 +298,10 @@ if(!user.verify_email){
                 _id: user._id,
                 name: user.name,
                 email: user.email,
-                refreshToken:refreshToken,
-                accessToken:accessToken
+                role: user.role || 'user',
+                avatar: user.avatar || '',
+                refreshToken: refreshToken,
+                accessToken: accessToken
             }
         });
 

@@ -1,5 +1,7 @@
 import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
 import { CartProvider } from '@/cart/CartProvider';
+import { AuthProvider } from '@/context/AuthContext';
+import { AuthModal } from '@/components/auth/AuthModal/AuthModal';
 import { CartDrawer } from '@/components/cart/CartDrawer/CartDrawer';
 import { Footer } from '@/components/layout/Footer/Footer';
 import { ScrollToTop } from '@/components/routing/ScrollToTop/ScrollToTop';
@@ -19,6 +21,7 @@ function RootLayout() {
       <Outlet />
       <Footer />
       <CartDrawer />
+      <AuthModal />
     </>
   );
 }
@@ -42,9 +45,12 @@ const router = createBrowserRouter([
 
 export function App() {
     return (
-        <CartProvider>
-            <RouterProvider router={router} />
-        </CartProvider>
+        <AuthProvider>
+            <CartProvider>
+                <RouterProvider router={router} />
+            </CartProvider>
+        </AuthProvider>
     );
 }
+
 
