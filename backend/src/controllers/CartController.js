@@ -1,6 +1,33 @@
+import mongoose from "mongoose";
 import Cart from "../models/Cart.js";
+import Product from "../models/Product.js";
 
+// Helper to safely populate cart items without throwing CastError on custom/mock product IDs
+const populateCartItems = async (cart) => {
+    if (!cart || !Array.isArray(cart.items) || cart.items.length === 0) {
+        return cart;
+    }
+    const validIds = cart.items
+        .map((i) => i.productId)
+        .filter((id) => id && mongoose.Types.ObjectId.isValid(String(id)));
 
+    let products = [];
+    if (validIds.length > 0) {
+        products = await Product.find({ _id: { $in: validIds } }).lean();
+    }
+    const productMap = new Map(products.map((p) => [p._id.toString(), p]));
+
+    const cartObj = cart.toObject ? cart.toObject() : { ...cart };
+    cartObj.items = cartObj.items.map((item) => {
+        const itemObj = item.toObject ? item.toObject() : { ...item };
+        const idStr = itemObj.productId?.toString();
+        if (productMap.has(idStr)) {
+            itemObj.productId = productMap.get(idStr);
+        }
+        return itemObj;
+    });
+    return cartObj;
+};
 
 // Add items to Cart
 const addTocart = async (req, res) => {
@@ -138,12 +165,15 @@ const getMyCart = async (req, res) => {
             return res.status(401).json({ message: "Unauthorized", success: false, error: true });
         }
 
-        let cart = await Cart.findOne({ userId }).populate("items.productId");
+        let cart = await Cart.findOne({ userId });
         if (!cart) {
             cart = { userId, items: [] };
+        } else {
+            cart = await populateCartItems(cart);
         }
         res.json({ message: "Cart retrieved successfully", success: true, error: false, cart });
     } catch (err) {
+        console.error("Get my cart error:", err);
         return res.status(500).json({ message: "Server error", success: false, error: true, err });
     }
 };
@@ -159,6 +189,7 @@ const clearCart = async (req, res) => {
         await Cart.findOneAndUpdate({ userId }, { $set: { items: [] } });
         res.json({ message: "Cart cleared successfully", success: true, error: false });
     } catch (err) {
+        console.error("Clear cart error:", err);
         return res.status(500).json({ message: "Server error", success: false, error: true, err });
     }
 };
@@ -167,12 +198,14 @@ const clearCart = async (req, res) => {
 const getCartByUserId = async (req, res) => {
     try {
         const { userId } = req.params;
-        const cart = await Cart.findOne({ userId }).populate("items.productId");
+        let cart = await Cart.findOne({ userId });
         if (!cart) {
             return res.status(404).json({ message: "Cart not found", success: false, error: true });
         }
+        cart = await populateCartItems(cart);
         res.json({ message: "Cart retrieved successfully", success: true, error: false, cart });
     } catch (err) {
+        console.error("Get cart by user ID error:", err);
         return res.status(500).json({ message: "Server error", success: false, error: true, err });
     }
 };

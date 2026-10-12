@@ -14,18 +14,24 @@ res.json({success:true,message:"address added successfully",address})
     }
 }
 
-// getaddress by ID
-const getAddressByUserId =async(req,res)=>{
-    try{
-        const address=await Address.find({
-            userId:req.params.userId
-        }).populate({path:"userId",select:"name"})
+import m
+ongoose from "mongoose";
 
-        res.json({success:true,message:"address fetched successfully",address})
+// getaddress by ID
+const getAddressByUserId = async (req, res) => {
+    try {
+        const { userId } = req.params;
+        if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
+            return res.status(400).json({ success: false, message: "Invalid user ID" });
+        }
+
+        const address = await Address.find({
+            userId
+        }).populate({ path: "userId", select: "name" });
+
+        res.json({ success: true, message: "address fetched successfully", address });
+    } catch (error) {
+        res.status(500).json({ success: false, message: "internal server error" });
     }
-    catch(error){
-        res.status(500).json({message:"internal server error"})
-    }
-    
-}
+};
 export {setAddress,getAddressByUserId}
