@@ -7,4 +7,5 @@ export const ROUTES = {
     about: '/about',
     faq: '/faq',
     contact: '/contact',
+    admin: '/admin',
 };

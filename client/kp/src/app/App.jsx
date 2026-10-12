@@ -13,6 +13,7 @@ import { FaqPage } from '@/pages/FaqPage/FaqPage';
 import { ProductDetailPage } from '@/pages/ProductDetailPage/ProductDetailPage';
 import { ProductsPage } from '@/pages/ProductsPage/ProductsPage';
 import { ReviewsPage } from '@/pages/ReviewsPage/ReviewsPage';
+import { AdminPage } from '@/pages/AdminPage/AdminPage';
 
 function RootLayout() {
   return (
@@ -38,6 +39,7 @@ const router = createBrowserRouter([
       { path: 'about', element: <AboutPage /> },
       { path: 'faq', element: <FaqPage /> },
       { path: 'contact', element: <ContactPage /> },
+      { path: 'admin', element: <AdminPage /> },
       { path: '*', element: <NotFoundPage /> },
     ],
   },

@@ -120,6 +120,80 @@ export const productService = {
       ) || null
     );
   },
+
+  /**
+   * Admin: Add a new sweet to MongoDB.
+   */
+  async addProduct(productData) {
+    const payload = {
+      title: productData.name || productData.title,
+      price: Number(productData.price),
+      unit: productData.unit || '500g',
+      category: productData.category || 'Signature',
+      description: productData.description || '',
+      image: Array.isArray(productData.image)
+        ? productData.image
+        : [productData.image],
+      stock: Number(productData.stock ?? 25),
+      discount: Number(productData.discount ?? 0),
+      publish: productData.publish ?? true,
+      more_details: {
+        ingredients: productData.ingredients || [],
+        shelfLife: productData.shelfLife || '15 days',
+        storage: productData.storage || 'Store in a cool dry place.',
+      },
+    };
+    const response = await api.post('/products/add', payload);
+    return adaptProduct(response.data?.product || response.data);
+  },
+
+  /**
+   * Admin: Update any details of an existing sweet.
+   */
+  async updateProduct(id, productData) {
+    const payload = {
+      title: productData.name || productData.title,
+      price: Number(productData.price),
+      unit: productData.unit || '500g',
+      category: productData.category || 'Signature',
+      description: productData.description || '',
+      image: Array.isArray(productData.image)
+        ? productData.image
+        : [productData.image],
+      stock: Number(productData.stock ?? 25),
+      discount: Number(productData.discount ?? 0),
+      publish: productData.publish ?? true,
+      more_details: {
+        ingredients: productData.ingredients || [],
+        shelfLife: productData.shelfLife || '15 days',
+        storage: productData.storage || 'Store in a cool dry place.',
+      },
+    };
+    const response = await api.put(`/products/update/${id}`, payload);
+    return adaptProduct(
+      response.data?.updatedProduct || response.data?.product || response.data
+    );
+  },
+
+  /**
+   * Admin: Delete a sweet from MongoDB.
+   */
+  async deleteProduct(id) {
+    const response = await api.delete(`/products/delete/${id}`);
+    return response.data;
+  },
+
+  /**
+   * Admin: Quick toggle in-stock / out-of-stock.
+   */
+  async toggleStock(id, currentStock) {
+    const newStock = currentStock > 0 ? 0 : 25;
+    const response = await api.put(`/products/update/${id}`, { stock: newStock });
+    return adaptProduct(
+      response.data?.updatedProduct || response.data?.product || response.data
+    );
+  },
 };
 
 export default productService;
+

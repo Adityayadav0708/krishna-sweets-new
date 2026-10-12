@@ -20,19 +20,18 @@ const productSchema = new mongoose.Schema(
       required: true,
     },
     category: {
+      type: mongoose.Schema.Types.Mixed,
+      default: "Signature",
+    },
+    categoryId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Category",
-      required: true,
+      required: false,
     },
-    categoryId:{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Category",
-      required: true,
-    },
-    subCategoryId:{
+    subCategoryId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "SubCategory",
-      required: true,
+      required: false,
     },
     unit:{
       type: String,
