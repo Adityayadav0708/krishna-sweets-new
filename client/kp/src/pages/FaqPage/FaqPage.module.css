@@ -1,0 +1,212 @@
+.hero {
+  padding-block: 4rem 3.5rem;
+  border-bottom: 1px solid rgba(129, 93, 32, 0.14);
+  background:
+    radial-gradient(circle at 88% 8%, rgba(215, 175, 88, 0.14), transparent 18rem),
+    var(--color-ivory-50);
+}
+
+.heroInner {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.whatsapp {
+  display: inline-flex;
+  min-height: 3.1rem;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.78rem 1.2rem;
+  border-radius: var(--radius-pill);
+  background: var(--color-maroon-800);
+  box-shadow: 0 0.7rem 1.5rem rgba(100, 19, 34, 0.2);
+  color: var(--color-white);
+  font-size: var(--text-sm);
+  font-weight: 800;
+  transition: background var(--transition), transform var(--transition);
+}
+
+.whatsapp:hover {
+  background: var(--color-maroon-900);
+  transform: translateY(-2px);
+}
+
+.faqSection {
+  padding-block: var(--space-8) var(--space-9);
+}
+
+.faqGrid {
+  display: grid;
+  grid-template-columns: minmax(16rem, 0.38fr) minmax(0, 1fr);
+  align-items: start;
+  gap: 1.5rem;
+}
+
+.helpCard,
+.item {
+  border: 1px solid rgba(129, 93, 32, 0.16);
+  border-radius: var(--radius-lg);
+  background: var(--color-white);
+  box-shadow: 0 0.8rem 2.8rem rgba(73, 39, 22, 0.06);
+}
+
+.helpCard {
+  display: grid;
+  gap: 0.75rem;
+  padding: 1.35rem;
+}
+
+.helpCard svg {
+  color: var(--color-gold-500);
+}
+
+.helpCard h2 {
+  margin: 0;
+  color: var(--color-maroon-900);
+  font-family: var(--font-display);
+  font-size: 1.85rem;
+  line-height: 1;
+}
+
+.helpCard p {
+  margin: 0;
+  color: var(--color-charcoal-700);
+  font-size: var(--text-sm);
+}
+
+.helpCard a {
+  color: var(--color-maroon-800);
+  font-size: var(--text-sm);
+  font-weight: 800;
+}
+
+.quickNotes {
+  display: grid;
+  gap: 0.65rem;
+  margin-top: 0.4rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(129, 93, 32, 0.14);
+}
+
+.quickNotes div {
+  display: flex;
+  gap: 0.6rem;
+  padding: 0.75rem;
+  border-radius: var(--radius-md);
+  background: var(--color-ivory-50);
+}
+
+.quickNotes svg {
+  margin-top: 0.15rem;
+  color: var(--color-pistachio-500);
+  flex-shrink: 0;
+}
+
+.quickNotes span {
+  display: grid;
+  gap: 0.1rem;
+}
+
+.quickNotes strong {
+  color: var(--color-maroon-900);
+  font-size: 0.72rem;
+  line-height: 1.1;
+}
+
+.quickNotes small {
+  color: var(--color-charcoal-700);
+  font-size: 0.64rem;
+  line-height: 1.45;
+}
+
+.accordion {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.item {
+  overflow: hidden;
+}
+
+.item button {
+  display: flex;
+  width: 100%;
+  min-height: 4rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.2rem;
+  background: transparent;
+  color: var(--color-maroon-900);
+  cursor: pointer;
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 700;
+  line-height: 1.15;
+  text-align: left;
+}
+
+.item button svg {
+  color: var(--color-gold-700);
+  flex-shrink: 0;
+  transition: transform var(--transition);
+}
+
+.item button:focus-visible,
+.whatsapp:focus-visible,
+.helpCard a:focus-visible {
+  outline: 3px solid rgba(215, 175, 88, 0.45);
+  outline-offset: 3px;
+}
+
+.rotate {
+  transform: rotate(180deg);
+}
+
+.answer {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 260ms ease;
+}
+
+.answerOpen {
+  grid-template-rows: 1fr;
+}
+
+.answer p {
+  min-height: 0;
+  margin: 0;
+  padding: 0 1.2rem 1.15rem;
+  color: var(--color-charcoal-700);
+  overflow: hidden;
+}
+
+@media (max-width: 52rem) {
+  .heroInner,
+  .faqGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .heroInner {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 36rem) {
+  .hero {
+    padding-block: 3rem;
+  }
+
+  .whatsapp {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .item button {
+    font-size: 1.15rem;
+  }
+}

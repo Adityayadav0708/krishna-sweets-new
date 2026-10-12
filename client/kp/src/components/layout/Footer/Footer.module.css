@@ -1,0 +1,226 @@
+.footer {
+  border-top: 1px solid rgba(215, 175, 88, 0.22);
+  background:
+    radial-gradient(circle at 10% 0%, rgba(215, 175, 88, 0.13), transparent 19rem),
+    var(--color-maroon-900);
+  color: var(--color-ivory-100);
+}
+
+.inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(9rem, 0.58fr) minmax(10rem, 0.72fr) minmax(15rem, 0.95fr);
+  gap: clamp(2rem, 5vw, 4.5rem);
+  padding-block: var(--space-7);
+}
+
+.brandBlock {
+  display: grid;
+  justify-items: start;
+  gap: 1.1rem;
+}
+
+.brandBlock p {
+  max-width: 34rem;
+  margin: 0;
+  color: var(--color-ivory-200);
+  font-size: var(--text-sm);
+}
+
+.ctaRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.whatsapp {
+  display: inline-flex;
+  min-height: 3rem;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.75rem 1.15rem;
+  border-radius: var(--radius-pill);
+  background: var(--color-gold-400);
+  color: var(--color-maroon-900);
+  font-size: var(--text-sm);
+  font-weight: 800;
+  transition: transform var(--transition), background var(--transition);
+}
+
+.whatsapp:hover {
+  background: var(--color-gold-500);
+  transform: translateY(-2px);
+}
+
+.secondaryCta {
+  display: inline-flex;
+  min-height: 3rem;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.15rem;
+  border: 1px solid rgba(250, 244, 231, 0.2);
+  border-radius: var(--radius-pill);
+  color: var(--color-ivory-100);
+  font-size: var(--text-sm);
+  font-weight: 800;
+  transition: border-color var(--transition), color var(--transition), transform var(--transition);
+}
+
+.secondaryCta:hover {
+  border-color: rgba(215, 175, 88, 0.55);
+  color: var(--color-gold-400);
+  transform: translateY(-2px);
+}
+
+.socials {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.socials span {
+  display: grid;
+  width: 2.35rem;
+  aspect-ratio: 1;
+  place-items: center;
+  border: 1px solid rgba(250, 244, 231, 0.18);
+  border-radius: 50%;
+  background: rgba(255, 253, 247, 0.05);
+  color: var(--color-gold-400);
+  font-size: 0.62rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.nav,
+.contact {
+  display: grid;
+  align-content: start;
+  gap: 0.65rem;
+}
+
+.nav h2,
+.contact h2 {
+  margin: 0 0 0.35rem;
+  color: var(--color-gold-400);
+  font-family: var(--font-display);
+  font-size: 1.45rem;
+  line-height: 1;
+}
+
+.nav a,
+.contact a,
+.contact span,
+.contact small {
+  color: var(--color-ivory-200);
+  font-size: var(--text-sm);
+}
+
+.nav a,
+.bottom a {
+  width: fit-content;
+  transition: color var(--transition), transform var(--transition);
+}
+
+.nav a:hover,
+.bottom a:hover {
+  color: var(--color-gold-400);
+  transform: translateX(2px);
+}
+
+.contact a,
+.contact span,
+.contact small {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+}
+
+.contact svg {
+  margin-top: 0.22rem;
+  color: var(--color-gold-400);
+  flex-shrink: 0;
+}
+
+.contact small {
+  color: rgba(250, 244, 231, 0.74);
+}
+
+.assurance {
+  margin-top: 0.3rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid rgba(215, 175, 88, 0.18);
+  color: rgba(250, 244, 231, 0.68) !important;
+  font-size: 0.68rem !important;
+  line-height: 1.5;
+}
+
+.bottom {
+  display: flex;
+  min-height: 4rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border-top: 1px solid rgba(215, 175, 88, 0.18);
+  color: rgba(250, 244, 231, 0.68);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.bottom div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+}
+
+.bottom a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: rgba(250, 244, 231, 0.78);
+}
+
+.whatsapp:focus-visible,
+.secondaryCta:focus-visible,
+.nav a:focus-visible,
+.contact a:focus-visible,
+.bottom a:focus-visible {
+  outline: 3px solid rgba(215, 175, 88, 0.45);
+  outline-offset: 3px;
+}
+
+@media (max-width: 52rem) {
+  .inner {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .brandBlock {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 36rem) {
+  .inner {
+    grid-template-columns: 1fr;
+    padding-block: var(--space-6);
+  }
+
+  .bottom {
+    align-items: flex-start;
+    flex-direction: column;
+    justify-content: center;
+    padding-block: 1rem;
+  }
+
+  .ctaRow,
+  .whatsapp,
+  .secondaryCta {
+    width: 100%;
+  }
+
+  .whatsapp,
+  .secondaryCta {
+    justify-content: center;
+  }
+}

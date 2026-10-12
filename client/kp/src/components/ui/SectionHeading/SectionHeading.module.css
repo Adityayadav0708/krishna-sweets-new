@@ -1,0 +1,48 @@
+.heading {
+  max-width: 42rem;
+}
+
+.center {
+  margin-inline: auto;
+  text-align: center;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--color-gold-700);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.eyebrow::before {
+  width: 1.8rem;
+  height: 1px;
+  background: var(--color-gold-500);
+  content: '';
+}
+
+.heading h2 {
+  margin: 0.45rem 0 0;
+  color: var(--color-maroon-900);
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-weight: 600;
+  line-height: 1.06;
+  letter-spacing: -0.03em;
+}
+
+.heading p {
+  margin: 1rem 0 0;
+  color: var(--color-charcoal-700);
+}
+
+.center .eyebrow::after {
+  width: 1.8rem;
+  height: 1px;
+  background: var(--color-gold-500);
+  content: '';
+}

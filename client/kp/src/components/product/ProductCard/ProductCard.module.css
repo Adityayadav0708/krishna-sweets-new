@@ -1,0 +1,109 @@
+.card {
+  min-width: 0;
+  border: 1px solid rgba(129, 93, 32, 0.16);
+  border-radius: var(--radius-lg);
+  background: var(--color-white);
+  box-shadow: 0 0.8rem 2.8rem rgba(73, 39, 22, 0.06);
+  overflow: hidden;
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.card:hover { transform: translateY(-6px); box-shadow: var(--shadow-soft); }
+
+.imageWrap {
+  aspect-ratio: 1 / 0.82;
+  overflow: hidden;
+  background: var(--color-ivory-100);
+  position: relative;
+}
+
+.imageLink {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.imageWrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 650ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.card:hover img { transform: scale(1.045); }
+
+.badge {
+  position: absolute;
+  top: 0.8rem;
+  left: 0.8rem;
+  padding: 0.38rem 0.65rem;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 253, 247, 0.91);
+  color: var(--color-maroon-800);
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  backdrop-filter: blur(10px);
+}
+
+.addButton {
+  position: absolute;
+  right: 0.8rem;
+  bottom: 0.8rem;
+  display: grid;
+  width: 2.8rem;
+  aspect-ratio: 1;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--color-maroon-800);
+  box-shadow: 0 0.5rem 1.2rem rgba(72, 16, 25, 0.26);
+  color: var(--color-white);
+  cursor: pointer;
+  transition: transform var(--transition), background var(--transition);
+}
+
+.addButton:hover { transform: scale(1.08); }
+.addButton.added { background: var(--color-pistachio-500); }
+
+.content { padding: 1.15rem; }
+
+.meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--color-gold-700);
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.content h3 {
+  margin: 0.55rem 0 0.25rem;
+  color: var(--color-maroon-900);
+  font-family: var(--font-display);
+  font-size: 1.65rem;
+  line-height: 1.1;
+}
+
+.content p {
+  min-height: 3.1rem;
+  margin: 0;
+  color: var(--color-charcoal-700);
+  font-size: 0.78rem;
+  line-height: 1.55;
+}
+
+.priceRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 1rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid rgba(129, 93, 32, 0.13);
+}
+
+.priceRow strong { color: var(--color-charcoal-900); font-size: var(--text-base); }
+.priceRow button { background: transparent; color: var(--color-maroon-800); cursor: pointer; font-size: 0.7rem; font-weight: 800; }
+.priceRow button:hover { color: var(--color-gold-700); }

@@ -1,0 +1,176 @@
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  border-bottom: 1px solid rgba(129, 93, 32, 0.14);
+  background: rgba(255, 253, 247, 0.93);
+  backdrop-filter: blur(18px);
+}
+
+.announcement {
+  background: var(--color-maroon-800);
+  color: var(--color-ivory-100);
+}
+
+.announcementInner {
+  display: flex;
+  min-height: 2.15rem;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.68rem;
+  letter-spacing: 0.035em;
+}
+
+.announcementInner a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--color-gold-400);
+  font-weight: 700;
+}
+
+.navbar {
+  display: flex;
+  min-height: 5.2rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.logoLink { flex-shrink: 0; }
+
+.desktopNav {
+  display: flex;
+  align-items: center;
+  gap: clamp(1.2rem, 2.5vw, 2.4rem);
+}
+
+.desktopNav a {
+  color: var(--color-charcoal-700);
+  font-size: 0.8rem;
+  font-weight: 700;
+  position: relative;
+}
+
+.desktopNav a::after {
+  position: absolute;
+  right: 0;
+  bottom: -0.55rem;
+  left: 0;
+  height: 1px;
+  background: var(--color-gold-500);
+  content: '';
+  transform: scaleX(0);
+  transition: transform var(--transition);
+}
+
+.desktopNav a:hover::after { transform: scaleX(1); }
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.iconButton,
+.menuButton {
+  display: grid;
+  width: 2.75rem;
+  aspect-ratio: 1;
+  place-items: center;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--color-maroon-800);
+  cursor: pointer;
+  position: relative;
+  transition: background var(--transition);
+}
+
+.iconButton:hover,
+.menuButton:hover { background: var(--color-ivory-100); }
+
+.iconButton span {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: grid;
+  width: 1.15rem;
+  height: 1.15rem;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--color-gold-500);
+  color: var(--color-maroon-900);
+  font-size: 0.58rem;
+  font-weight: 800;
+}
+
+.orderButton {
+  margin-left: 0.35rem;
+  padding: 0.78rem 1.2rem;
+  border-radius: var(--radius-pill);
+  background: var(--color-maroon-800);
+  color: var(--color-white);
+  font-size: 0.75rem;
+  font-weight: 700;
+  transition: background var(--transition), transform var(--transition);
+}
+
+.orderButton:hover { background: var(--color-maroon-900); transform: translateY(-1px); }
+.menuButton { display: none; }
+.mobileMenu { display: none; }
+
+@media (max-width: 58rem) {
+  .desktopNav, .orderButton { display: none; }
+  .menuButton { display: grid; }
+  .mobileMenu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    left: 0;
+    display: grid;
+    max-height: 0;
+    overflow: hidden;
+    padding-inline: max(1rem, calc((100% - var(--container)) / 2));
+    border-bottom: 1px solid rgba(129, 93, 32, 0.16);
+    background: var(--color-ivory-50);
+    box-shadow: 0 1.5rem 3rem rgba(72, 16, 25, 0.16);
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      max-height 300ms ease,
+      opacity 200ms ease,
+      padding 300ms ease,
+      visibility 0s linear 300ms;
+  }
+  .mobileMenuOpen {
+    max-height: calc(100dvh - 6.9rem);
+    overflow-y: auto;
+    padding-block: 0.55rem 1.25rem;
+    opacity: 1;
+    visibility: visible;
+    overscroll-behavior: contain;
+    transition-delay: 0s;
+  }
+  .mobileMenu nav { display: grid; }
+  .mobileMenu a {
+    min-height: 3.55rem;
+    display: flex;
+    align-items: center;
+    padding: 0.7rem 0;
+    border-bottom: var(--border-soft);
+    color: var(--color-maroon-800);
+    font-family: var(--font-display);
+    font-size: 1.45rem;
+    font-weight: 600;
+  }
+  .mobileMenu p { margin: 0.85rem 0 0; color: var(--color-charcoal-700); font-size: var(--text-xs); }
+}
+
+@media (max-width: 36rem) {
+  .announcementInner { justify-content: center; text-align: center; }
+  .announcementInner a { display: none; }
+  .navbar { min-height: 4.65rem; }
+  .logoLink [data-brand-copy] { display: none; }
+  .actions .iconButton:first-child { display: none; }
+  .mobileMenuOpen { max-height: calc(100dvh - 6.8rem); }
+}

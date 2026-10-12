@@ -1,0 +1,57 @@
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.85rem;
+  color: var(--color-maroon-800);
+}
+
+.seal {
+  display: grid;
+  width: 3.25rem;
+  aspect-ratio: 1;
+  place-items: center;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1;
+  position: relative;
+}
+
+.seal::after {
+  position: absolute;
+  inset: 0.25rem;
+  border: 1px solid var(--color-gold-400);
+  border-radius: inherit;
+  content: '';
+}
+
+.copy {
+  display: grid;
+  line-height: 1;
+}
+
+.copy strong {
+  font-family: var(--font-display);
+  font-size: 1.65rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.copy small {
+  margin-top: 0.34rem;
+  color: var(--color-gold-700);
+  font-size: 0.61rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.light {
+  color: var(--color-ivory-50);
+}
+
+.light .copy small {
+  color: var(--color-gold-400);
+}
