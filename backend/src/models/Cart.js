@@ -21,25 +21,24 @@ const cartSchema = new mongoose.Schema({
         required:true
     },
 
-    items:[{
-        // stores the ID of the product
-        productId:{
-        type:mongoose.Schema.Types.ObjectId,
-
-
-
-        //ref: "Product" This tells Mongoose: "This productId belongs to the Product model.
-        //So when you do .populate("items.productId"),
-        //Mongoose knows exactly which collection to look into to fetch the product details.
-        ref:"Product",
-        required:true
-    },
-    quantity:{
-        type:Number,
-        default:1,
-        required:true
-    }
-}]
+    items: [
+      {
+        productId: {
+          type: mongoose.Schema.Types.Mixed,
+          ref: "Product",
+          required: true,
+        },
+        size: {
+          type: String,
+          default: "500g",
+        },
+        quantity: {
+          type: Number,
+          default: 1,
+          required: true,
+        },
+      },
+    ],
 })
 const Cart = mongoose.model("Cart",cartSchema)
 export default Cart
