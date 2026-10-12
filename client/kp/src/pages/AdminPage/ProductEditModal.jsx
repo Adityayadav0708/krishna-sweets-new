@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { X } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { X, UploadCloud, Loader2 } from 'lucide-react';
 import { productService } from '@/services/productService';
 import styles from './ProductEditModal.module.css';
 
@@ -18,6 +18,7 @@ const UNITS = ['500g', '250g', '1kg', '1 Piece', 'Pack of 6', 'Gift Box'];
 
 export function ProductEditModal({ product, isOpen, onClose, onSaved }) {
   const isEditing = Boolean(product && (product.id || product._id));
+  const fileInputRef = useRef(null);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -35,6 +36,7 @@ export function ProductEditModal({ product, isOpen, onClose, onSaved }) {
 
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     if (product) {
@@ -79,6 +81,29 @@ export function ProductEditModal({ product, isOpen, onClose, onSaved }) {
       ...prev,
       [name]: type === 'number' ? Number(value) : value,
     }));
+  };
+
+  const handleFileUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    setError('');
+    try {
+      const uploadedUrl = await productService.uploadImage(file);
+      if (uploadedUrl) {
+        setFormData((prev) => ({ ...prev, image: uploadedUrl }));
+      }
+    } catch (err) {
+      setError(
+        err.response?.data?.message ||
+          err.message ||
+          'Failed to upload photo to Cloudinary.'
+      );
+    } finally {
+      setUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -227,14 +252,50 @@ export function ProductEditModal({ product, isOpen, onClose, onSaved }) {
             </div>
 
             <div className={styles.field}>
-              <label className={styles.label}>Photo URL</label>
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  marginBottom: '0.4rem',
+                }}
+              >
+                <label className={styles.label} style={{ marginBottom: 0 }}>
+                  Sweet Photo
+                </label>
+                <button
+                  type="button"
+                  className={styles.uploadTriggerBtn}
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={uploading}
+                >
+                  {uploading ? (
+                    <>
+                      <Loader2 size={13} className={styles.spinner} /> Uploading...
+                    </>
+                  ) : (
+                    <>
+                      <UploadCloud size={13} /> Upload from Device
+                    </>
+                  )}
+                </button>
+              </div>
+
+              <input
+                type="file"
+                ref={fileInputRef}
+                style={{ display: 'none' }}
+                accept="image/*"
+                onChange={handleFileUpload}
+              />
+
               <input
                 type="url"
                 name="image"
                 value={formData.image}
                 onChange={handleChange}
                 className={styles.input}
-                placeholder="https://... or /assets/images/..."
+                placeholder="https://... or click 'Upload from Device' above"
               />
             </div>
 
@@ -248,7 +309,9 @@ export function ProductEditModal({ product, isOpen, onClose, onSaved }) {
                     e.currentTarget.style.display = 'none';
                   }}
                 />
-                <span className={styles.previewInfo}>Live image preview from URL</span>
+                <span className={styles.previewInfo}>
+                  Live image preview {formData.image.includes('cloudinary') ? '(Cloudinary Hosted)' : ''}
+                </span>
               </div>
             )}
 

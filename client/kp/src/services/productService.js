@@ -193,6 +193,20 @@ export const productService = {
       response.data?.updatedProduct || response.data?.product || response.data
     );
   },
+
+  /**
+   * Admin: Upload a sweet photo to Cloudinary via backend.
+   */
+  async uploadImage(file) {
+    const formData = new FormData();
+    formData.append('image', file);
+    const response = await api.post('/products/upload-image', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data?.url;
+  },
 };
 
 export default productService;

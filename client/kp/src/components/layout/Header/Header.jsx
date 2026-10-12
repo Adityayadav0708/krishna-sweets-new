@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { ChevronDown, LogOut, Menu, Phone, Search, Shield, ShoppingBag, User, X } from 'lucide-react';
+import { ChevronDown, LogOut, Menu, Package, Phone, Search, Shield, ShoppingBag, User, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '@/app/routes';
 import { BrandMark } from '@/components/brand/BrandMark/BrandMark';
@@ -111,6 +111,14 @@ export function Header({ cartCount, onCartOpen }) {
                     </Link>
                   )}
 
+                  <Link
+                    to="/my-orders"
+                    className={styles.dropdownItem}
+                    onClick={() => setUserMenuOpen(false)}
+                  >
+                    <Package size={15} /> My Orders
+                  </Link>
+
                   <button
                     type="button"
                     className={`${styles.dropdownItem} ${styles.logoutItem}`}
@@ -148,6 +156,11 @@ export function Header({ cartCount, onCartOpen }) {
       >
         <nav aria-label="Mobile navigation">
           {nav.map((item) => (<Link to={item.href} key={item.label} onClick={() => setMenuOpen(false)}>{item.label}</Link>))}
+          {user && (
+            <Link to="/my-orders" onClick={() => setMenuOpen(false)}>
+              My Orders
+            </Link>
+          )}
           {isAdmin && (
             <Link to="/admin" onClick={() => setMenuOpen(false)}>
               Admin Portal

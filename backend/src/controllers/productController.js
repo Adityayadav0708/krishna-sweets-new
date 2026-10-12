@@ -1,4 +1,33 @@
 import Product from "../models/Product.js";
+import uploadImageClodinary from "../../utils/uploadImagecloudinary.js";
+
+const uploadProductImage = async (req, res) => {
+  try {
+    const file = req.file;
+    if (!file) {
+      return res.status(400).json({
+        message: "No image file provided",
+        success: false,
+        error: true,
+      });
+    }
+
+    const uploadResult = await uploadImageClodinary(file);
+    return res.status(200).json({
+      message: "Image uploaded successfully",
+      success: true,
+      error: false,
+      url: uploadResult.secure_url || uploadResult.url,
+    });
+  } catch (err) {
+    console.error("Error uploading sweet image:", err.message);
+    return res.status(500).json({
+      message: err.message || "Failed to upload image",
+      success: false,
+      error: true,
+    });
+  }
+};
 
 const createProduct = async (req, res) => {
   try {
@@ -99,4 +128,5 @@ export {
   getAllProducts,
   updateProduct,
   deleteProduct,
+  uploadProductImage,
 };
