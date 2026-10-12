@@ -1,13 +1,16 @@
 import { useMemo, useState } from 'react';
-import { MessageCircle, ShoppingBag, Trash2, X } from 'lucide-react';
+import { MessageCircle, ShoppingBag, Trash2, Truck, X } from 'lucide-react';
 import { useCart } from '@/cart/useCart';
 import { QuantityStepper } from '@/components/cart/QuantityStepper/QuantityStepper';
+import { CheckoutModal } from '@/components/cart/CheckoutModal/CheckoutModal';
 import { business } from '@/data/site';
 import { formatPrice } from '@/utils/format';
 import styles from './CartDrawer.module.css';
+
 export function CartDrawer() {
-    const { closeCart, enrichedItems, isCartOpen, removeItem, total, totalCount, updateQuantity, } = useCart();
+    const { closeCart, enrichedItems, isCartOpen, removeItem, total, totalCount, updateQuantity } = useCart();
     const [notes, setNotes] = useState('');
+    const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
     const checkoutUrl = useMemo(() => {
         const lines = enrichedItems.map((item, index) => (`${index + 1}. ${item.product.name} (${item.size}) x ${item.quantity} - ${formatPrice(item.lineTotal)}`));
         const message = [
@@ -68,7 +71,7 @@ export function CartDrawer() {
               </div>
               <div>
                 <span>Delivery</span>
-                <strong>Confirmed on WhatsApp</strong>
+                <strong>Free across Chhibramau</strong>
               </div>
               <div className={styles.grandTotal}>
                 <span>Grand total</span>
@@ -76,10 +79,23 @@ export function CartDrawer() {
               </div>
             </div>
 
-            <a className={styles.checkout} href={checkoutUrl} target="_blank" rel="noreferrer">
-              <MessageCircle size={18}/> Checkout on WhatsApp
+            <button
+              type="button"
+              className={styles.checkoutPrimary}
+              onClick={() => setIsCheckoutOpen(true)}
+            >
+              <Truck size={19} /> Order Cash on Delivery
+            </button>
+
+            <a className={styles.checkoutSecondary} href={checkoutUrl} target="_blank" rel="noreferrer">
+              <MessageCircle size={16}/> Order directly on WhatsApp
             </a>
           </>)}
       </aside>
+
+      <CheckoutModal
+        isOpen={isCheckoutOpen}
+        onClose={() => setIsCheckoutOpen(false)}
+      />
     </>);
 }

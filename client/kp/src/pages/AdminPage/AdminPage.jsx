@@ -1,11 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
 import {
   CheckCircle2,
+  Clock,
   Edit3,
   Package,
   Plus,
   Search,
   Shield,
+  ShoppingBag,
   Trash2,
   XCircle,
 } from 'lucide-react';
@@ -13,6 +15,7 @@ import { Container } from '@/components/layout/Container/Container';
 import { Header } from '@/components/layout/Header/Header';
 import { useAuth } from '@/context/AuthContext';
 import { productService } from '@/services/productService';
+import { orderService } from '@/services/orderService';
 import { formatPrice } from '@/utils/format';
 import { ProductEditModal } from './ProductEditModal';
 import styles from './AdminPage.module.css';
@@ -20,7 +23,9 @@ import styles from './AdminPage.module.css';
 export function AdminPage() {
   const { user, isAdmin, loading: authLoading, openAuthModal } = useAuth();
 
+  const [adminTab, setAdminTab] = useState('sweets'); // 'sweets' | 'orders'
   const [products, setProducts] = useState([]);
+  const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
@@ -41,9 +46,29 @@ export function AdminPage() {
     }
   };
 
+  const loadOrders = async () => {
+    try {
+      const data = await orderService.getAllOrders();
+      setOrders(data);
+    } catch (err) {
+      console.error('Failed to load orders for admin:', err);
+    }
+  };
+
   useEffect(() => {
     loadProducts();
+    loadOrders();
   }, []);
+
+  const handleUpdateStatus = async (orderId, newStatus) => {
+    try {
+      await orderService.updateOrderStatus(orderId, newStatus);
+      loadOrders();
+    } catch (err) {
+      alert(err.message || 'Failed to update order status');
+    }
+  };
+
 
   const handleEdit = (prod) => {
     setEditingProduct(prod);
@@ -158,6 +183,23 @@ export function AdminPage() {
             </button>
           </div>
 
+          <div className={styles.tabsRow}>
+            <button
+              type="button"
+              className={`${styles.tabBtn} ${adminTab === 'sweets' ? styles.tabBtnActive : ''}`}
+              onClick={() => setAdminTab('sweets')}
+            >
+              <Package size={15} /> Sweets Catalogue ({products.length})
+            </button>
+            <button
+              type="button"
+              className={`${styles.tabBtn} ${adminTab === 'orders' ? styles.tabBtnActive : ''}`}
+              onClick={() => setAdminTab('orders')}
+            >
+              <ShoppingBag size={15} /> Customer Orders ({orders.length})
+            </button>
+          </div>
+
           <div className={styles.statsRow}>
             <div className={styles.statCard}>
               <div className={styles.statLabel}>Total Sweets on Menu</div>
@@ -170,9 +212,9 @@ export function AdminPage() {
               </div>
             </div>
             <div className={styles.statCard}>
-              <div className={styles.statLabel}>Sold Out / Drafts</div>
-              <div className={styles.statValue} style={{ color: '#991b1b' }}>
-                {stats.outOfStock}
+              <div className={styles.statLabel}>Active Orders</div>
+              <div className={styles.statValue} style={{ color: '#a06e18' }}>
+                {orders.length}
               </div>
             </div>
           </div>
@@ -180,32 +222,116 @@ export function AdminPage() {
       </section>
 
       <Container>
-        <div className={styles.controlsBar}>
-          <div className={styles.searchBox}>
-            <Search size={17} color="#a06e18" />
-            <input
-              type="text"
-              placeholder="Search sweets by title or category..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
+        {adminTab === 'orders' ? (
+          <div style={{ marginTop: '2rem' }}>
+            <div className={styles.tableCard}>
+              <table className={styles.table}>
+                <thead>
+                  <tr>
+                    <th>Order ID / Time</th>
+                    <th>Customer & Mobile</th>
+                    <th>Delivery Address</th>
+                    <th>Sweets Ordered</th>
+                    <th>Total & Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {orders.length === 0 ? (
+                    <tr>
+                      <td colSpan={5} style={{ textAlign: 'center', padding: '3.5rem', color: '#777' }}>
+                        No orders placed yet. Orders placed by customers will appear here in real-time.
+                      </td>
+                    </tr>
+                  ) : (
+                    orders.map((ord) => (
+                      <tr key={ord._id}>
+                        <td>
+                          <strong>#{String(ord._id).slice(-6).toUpperCase()}</strong>
+                          <div style={{ fontSize: '0.72rem', color: '#777', marginTop: '0.2rem' }}>
+                            {new Date(ord.createdAt).toLocaleDateString('en-IN', {
+                              hour: '2-digit',
+                              minute: '2-digit',
+                            })}
+                          </div>
+                        </td>
 
-          <div className={styles.filterPills}>
-            {categories.map((cat) => (
-              <button
-                type="button"
-                key={cat}
-                className={`${styles.pill} ${
-                  selectedCategory === cat ? styles.pillActive : ''
-                }`}
-                onClick={() => setSelectedCategory(cat)}
-              >
-                {cat}
-              </button>
-            ))}
+                        <td>
+                          <div style={{ fontWeight: 700, color: '#410c0c' }}>
+                            {ord.address?.fullName || ord.userId?.name || 'Customer'}
+                          </div>
+                          <div style={{ fontSize: '0.76rem', color: '#666' }}>
+                            {ord.address?.phone || ord.userId?.mobile || 'No phone'}
+                          </div>
+                        </td>
+
+                        <td>
+                          <div style={{ fontSize: '0.8rem', color: '#333', maxWidth: '14rem' }}>
+                            {ord.address?.addressLine}, {ord.address?.city} ({ord.address?.pinCode})
+                          </div>
+                        </td>
+
+                        <td>
+                          <div style={{ fontSize: '0.78rem', color: '#444' }}>
+                            {ord.items?.map((it, idx) => (
+                              <div key={idx}>
+                                • {it.name} ({it.size || '500g'}) × {it.quantity}
+                              </div>
+                            ))}
+                          </div>
+                        </td>
+
+                        <td>
+                          <div style={{ fontWeight: 800, color: '#410c0c', marginBottom: '0.4rem' }}>
+                            {formatPrice(ord.totalAmount)} (COD)
+                          </div>
+                          <select
+                            value={ord.status || 'Confirmed'}
+                            onChange={(e) => handleUpdateStatus(ord._id, e.target.value)}
+                            className={styles.statusSelect}
+                          >
+                            <option value="Confirmed">Confirmed</option>
+                            <option value="Preparing">Preparing Fresh</option>
+                            <option value="Out for Delivery">Out for Delivery</option>
+                            <option value="Delivered">Delivered</option>
+                            <option value="Cancelled">Cancelled</option>
+                          </select>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>
+        ) : (
+          <>
+            <div className={styles.controlsBar}>
+              <div className={styles.searchBox}>
+                <Search size={17} color="#a06e18" />
+                <input
+                  type="text"
+                  placeholder="Search sweets by title or category..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </div>
+
+              <div className={styles.filterPills}>
+                {categories.map((cat) => (
+                  <button
+                    type="button"
+                    key={cat}
+                    className={`${styles.pill} ${
+                      selectedCategory === cat ? styles.pillActive : ''
+                    }`}
+                    onClick={() => setSelectedCategory(cat)}
+                  >
+                    {cat}
+                  </button>
+                ))}
+              </div>
+            </div>
+
 
         <div className={styles.tableCard}>
           <table className={styles.table}>
@@ -312,7 +438,9 @@ export function AdminPage() {
             </tbody>
           </table>
         </div>
-      </Container>
+      </>
+    )}
+  </Container>
 
       <ProductEditModal
         product={editingProduct}

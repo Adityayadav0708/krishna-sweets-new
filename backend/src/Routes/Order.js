@@ -1,9 +1,15 @@
 import express from "express";
-import { placeOrder } from "../controllers/orderController.js";
-import { auth } from "../Middleware/authMiddleware.js";
+import { placeOrder, getMyOrders, getAllOrders, updateOrderStatus } from "../controllers/orderController.js";
+import { auth, isAdmin } from "../Middleware/authMiddleware.js";
 
 const router = express.Router();
 
+// Customer order routes
 router.post("/place", auth, placeOrder);
+router.get("/my-orders", auth, getMyOrders);
+
+// Admin order management routes
+router.get("/all-orders", auth, isAdmin, getAllOrders);
+router.put("/update-status/:id", auth, isAdmin, updateOrderStatus);
 
 export default router;

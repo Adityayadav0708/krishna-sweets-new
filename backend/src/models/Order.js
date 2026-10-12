@@ -8,9 +8,14 @@ const OrderSchema = new mongoose.Schema({
 	items: [
 		{
 			productId: {
-				type: mongoose.Schema.Types.ObjectId,
+				type: mongoose.Schema.Types.Mixed,
 				ref: "Product",
 				required: true
+			},
+			name: String,
+			size: {
+				type: String,
+				default: "500g"
 			},
 			quantity: {
 				type: Number,
@@ -20,7 +25,6 @@ const OrderSchema = new mongoose.Schema({
 				type: Number,
 				required: true
 			},
-
 		}
 	],
 	address: {

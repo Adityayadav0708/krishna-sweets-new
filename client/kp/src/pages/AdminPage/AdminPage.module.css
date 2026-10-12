@@ -66,6 +66,49 @@
   box-shadow: 0 8px 24px rgba(84, 18, 18, 0.4);
 }
 
+.tabsRow {
+  display: flex;
+  gap: 0.6rem;
+  margin-top: 1.6rem;
+}
+
+.tabBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.2rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid rgba(129, 93, 32, 0.2);
+  background: #ffffff;
+  color: var(--color-charcoal-700);
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.tabBtn:hover {
+  background: rgba(129, 93, 32, 0.08);
+}
+
+.tabBtnActive {
+  background: var(--color-maroon-800);
+  color: #ffffff;
+  border-color: var(--color-maroon-800);
+}
+
+.statusSelect {
+  padding: 0.35rem 0.65rem;
+  border-radius: 0.45rem;
+  border: 1px solid rgba(129, 93, 32, 0.2);
+  background: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-charcoal-800);
+  cursor: pointer;
+}
+
+
 .statsRow {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
