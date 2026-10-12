@@ -8,26 +8,23 @@ if(!process.env.RESEND_API_KEY){
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-const sendEmail = async ({to,subject ,html}) => {
-	try{
-
-
-
-		
+const sendEmail = async ({ to, subject, html }) => {
+	try {
 		const { data, error } = await resend.emails.send({
 			from: "Krishna Sweet <onboarding@resend.dev>",
 			to: to,
 			subject: subject,
 			html: html,
-  });
+		});
 
-   if (error) {
-            return console.error({ error });
-        }
+		if (error) {
+			console.warn(`[Resend Sandbox Notice]: Could not send to ${to}. Reason:`, error.message);
+			throw new Error(error.message || "Failed to send email via Resend");
+		}
 		return data;
+	} catch (error) {
+		console.warn(`[Email Service Notice for ${to}]:`, error.message);
+		throw error;
 	}
-	catch(error){
-		console.log("Something went wrong in sending email")
-	}
-}
+};
 export default sendEmail;

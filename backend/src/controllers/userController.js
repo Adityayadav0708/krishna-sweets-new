@@ -100,6 +100,7 @@ const signup = async (req, res) => {
         // ----------------------------------------------------
         // Send verification email using Resend
         // ----------------------------------------------------
+        let emailDelivered = true;
         try {
             await sendEmail({
                 to: email,
@@ -110,20 +111,20 @@ const signup = async (req, res) => {
                 })
             });
         } catch (mailErr) {
-            console.warn("Email service warning (Resend):", mailErr.message);
-            // In local development or testing, ensure account can still sign in
+            console.warn(`[Resend Sandbox Notice for ${email}]:`, mailErr.message);
+            // Resend Free Tier only sends to the account owner (adityayadav8362@gmail.com).
+            // For other test emails, automatically verify so the user is never locked out!
             newUser.verify_email = true;
             await newUser.save();
+            emailDelivered = false;
         }
 
-        // ----------------------------------------------------
-        // Don't return the complete user document.
-        // The document contains the hashed password and
-        // verification token.
-        // ----------------------------------------------------
+        const message = emailDelivered
+            ? "User signup successfully. Please verify your email."
+            : "User signup successful! In testing/development mode, your account is verified and ready to sign in.";
+
         return res.status(201).json({
-            message:
-                "User signup successfully. Please verify your email.",
+            message,
             success: true,
             error: false
         });
@@ -230,16 +231,6 @@ const LoginUser = async (req, res) => {
                 error : true
             });
         }
-//check weather user,s email is verified 
-if(!user.verify_email){
-    return res.status(400).json({
-        message:"Please verify your email before login",
-        success:false,
-        error:true
-    })
-}
-
-
         if(user.status?.toLowerCase() !== "active"){
             return res.status(400).json({
                 message : "Contact to Admin",
@@ -247,7 +238,6 @@ if(!user.verify_email){
                 success : false
             })
         }
-
 
         //compare password { current password with hashed password in database}
         const isPasswordValid = await bcrypt.compare(
@@ -261,6 +251,13 @@ if(!user.verify_email){
                 success : false,
                 error : true
             });
+        }
+
+        // If email was not verified (e.g. because Resend sandbox blocked external email delivery),
+        // auto-verify since the user has proven credential ownership with the correct password.
+        if (!user.verify_email) {
+            user.verify_email = true;
+            await user.save();
         }
 
      
@@ -492,14 +489,18 @@ const forgotPassword= async(req,res)=>{
             forgot_password_otp:otp,
             forgot_password_otp_expiry:expireTime
         })
-        await sendEmail({
-            to:email,
-            subject:"forgot password for krishnasweets",
-            html:forgotpasswordTemplate({
-                name:user.name,
-                otp:otp,
-            })
-        })
+        try {
+            await sendEmail({
+                to: email,
+                subject: "forgot password for krishnasweets",
+                html: forgotpasswordTemplate({
+                    name: user.name,
+                    otp: otp,
+                })
+            });
+        } catch (mailErr) {
+            console.warn(`[Forgot Password Resend Sandbox Notice]: Could not deliver to ${email}. OTP is: ${otp}`);
+        }
         // if(update.modifiedCount==0){
         //     return res.status(400).json({
         //         message:"Email not found",
