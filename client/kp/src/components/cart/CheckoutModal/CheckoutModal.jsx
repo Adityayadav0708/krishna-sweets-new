@@ -25,14 +25,23 @@ export function CheckoutModal({ isOpen, onClose }) {
   const [confirmedOrder, setConfirmedOrder] = useState(null);
 
   useEffect(() => {
-    if (user) {
+    if (user && isOpen) {
+      let savedAddress = null;
+      try {
+        const raw = localStorage.getItem('ks_default_address');
+        if (raw) savedAddress = JSON.parse(raw);
+      } catch (e) {}
+
       setFormData((prev) => ({
         ...prev,
-        fullName: prev.fullName || user.name || '',
-        phone: prev.phone || user.mobile || '',
+        fullName: prev.fullName || savedAddress?.fullName || user.name || '',
+        phone: prev.phone || savedAddress?.phone || user.mobile || '',
+        addressLine: prev.addressLine || savedAddress?.addressLine || '',
+        city: prev.city || savedAddress?.city || 'Chhibramau',
+        pinCode: prev.pinCode || savedAddress?.pinCode || '209721',
       }));
     }
-  }, [user]);
+  }, [user, isOpen]);
 
   useEffect(() => {
     if (isOpen) {
@@ -89,6 +98,18 @@ export function CheckoutModal({ isOpen, onClose }) {
       });
 
       setConfirmedOrder(result.order || { _id: result.orderId });
+      try {
+        localStorage.setItem(
+          'ks_default_address',
+          JSON.stringify({
+            fullName: formData.fullName.trim(),
+            phone: formData.phone.trim(),
+            addressLine: formData.addressLine.trim(),
+            city: formData.city.trim() || 'Chhibramau',
+            pinCode: formData.pinCode.trim() || '209721',
+          })
+        );
+      } catch (e) {}
       clearCart();
     } catch (err) {
       setError(err.message || 'Failed to place order. Please try again.');

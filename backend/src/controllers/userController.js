@@ -398,42 +398,53 @@ return res.json({
     }
 }
 //update user details when loggedin 
-const updateUserDetails= async(req,res)=>{
+const updateUserDetails = async (req, res) => {
     try {
-
-        const userId = req.user.id //auth middleware (Only login user can do this )
-        const { name, email, mobile, password } = req.body 
-
-        let hashPassword = ""
-
-        if(password){
-            const salt = await bcrypt.genSalt(10)
-            hashPassword = await bcrypt.hash(password,salt)
+        const userId = req.userId || req.user?.id || req.user?._id;
+        if (!userId) {
+            return res.status(401).json({
+                message: "Unauthorized",
+                error: true,
+                success: false,
+            });
         }
-// use updateone dont use findbyidandupdate this send data of previous data 
-        const updateUser = await User.updateOne({ _id : userId},{
-            ...(name && { name : name }),
-            ...(email && { email : email }),
-            ...(mobile && { mobile : mobile }),
-            ...(password && { password : hashPassword })
-        })
+
+        const { name, email, mobile, password, address } = req.body;
+
+        let hashPassword = "";
+        if (password) {
+            const salt = await bcrypt.genSalt(10);
+            hashPassword = await bcrypt.hash(password, salt);
+        }
+
+        await User.updateOne(
+            { _id: userId },
+            {
+                ...(name && { name: name.trim() }),
+                ...(email && { email: email.trim() }),
+                ...(mobile && { mobile: mobile.trim() }),
+                ...(address && { address }),
+                ...(password && { password: hashPassword }),
+            }
+        );
+
+        const updatedUser = await User.findById(userId).select("-password -refreshToken");
 
         return res.json({
-            message : "Updated successfully",
-            error : false,
-            success : true,
-            data : updateUser
-        })
-
-
+            message: "Profile updated successfully",
+            error: false,
+            success: true,
+            user: updatedUser,
+            data: updatedUser,
+        });
     } catch (error) {
         return res.status(500).json({
-            message : error.message || error,
-            error : true,
-            success : false
-        })
+            message: error.message || error,
+            error: true,
+            success: false,
+        });
     }
-}
+};
 
 
 // forget password when not login  ================================

@@ -2,6 +2,7 @@ import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
 import { CartProvider } from '@/cart/CartProvider';
 import { AuthProvider } from '@/context/AuthContext';
 import { AuthModal } from '@/components/auth/AuthModal/AuthModal';
+import { ProfileModal } from '@/components/auth/ProfileModal/ProfileModal';
 import { CartDrawer } from '@/components/cart/CartDrawer/CartDrawer';
 import { Footer } from '@/components/layout/Footer/Footer';
 import { ScrollToTop } from '@/components/routing/ScrollToTop/ScrollToTop';
@@ -24,6 +25,7 @@ function RootLayout() {
       <Footer />
       <CartDrawer />
       <AuthModal />
+      <ProfileModal />
     </>
   );
 }

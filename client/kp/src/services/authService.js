@@ -41,6 +41,14 @@ export const authService = {
       return null;
     }
   },
+
+  /**
+   * Update profile information (name, mobile, password, address).
+   */
+  async updateProfile(updates) {
+    const response = await api.put('/auth/update-user', updates);
+    return response.data?.user || response.data?.data;
+  },
 };
 
 export default authService;

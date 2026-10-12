@@ -8,6 +8,7 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [authModalMode, setAuthModalMode] = useState('login'); // 'login' | 'signup'
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
   // Check existing session on application mount
   useEffect(() => {
@@ -38,6 +39,14 @@ export function AuthProvider({ children }) {
     setIsAuthModalOpen(false);
   };
 
+  const openProfileModal = () => {
+    setIsProfileModalOpen(true);
+  };
+
+  const closeProfileModal = () => {
+    setIsProfileModalOpen(false);
+  };
+
   const login = async ({ email, password }) => {
     const loggedUser = await authService.login({ email, password });
     setUser(loggedUser);
@@ -55,6 +64,15 @@ export function AuthProvider({ children }) {
     setUser(null);
   };
 
+  const updateProfile = async (updates) => {
+    await authService.updateProfile(updates);
+    const refreshed = await authService.getMe();
+    if (refreshed) {
+      setUser(refreshed);
+    }
+    return refreshed;
+  };
+
   const isAdmin = Boolean(user && user.role === 'admin');
 
   const value = {
@@ -63,9 +81,13 @@ export function AuthProvider({ children }) {
     loading,
     isAuthModalOpen,
     authModalMode,
+    isProfileModalOpen,
     setAuthModalMode,
     openAuthModal,
     closeAuthModal,
+    openProfileModal,
+    closeProfileModal,
+    updateProfile,
     login,
     signup,
     logout,

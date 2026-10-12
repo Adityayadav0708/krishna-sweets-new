@@ -9,56 +9,70 @@ import { SectionHeading } from '@/components/ui/SectionHeading/SectionHeading';
 import { products } from '@/data/products';
 import { productService } from '@/services/productService';
 import styles from './ProductsPage.module.css';
-const categories = ['Signature', 'Bengali', 'Ladoo', 'Festive'];
+const defaultCategories = [
+  'Signature',
+  'Bengali',
+  'Ladoo',
+  'Festive',
+  'Dry Fruit',
+  'Halwa',
+  'Savoury',
+  'Gift Boxes',
+];
 const priceRanges = [
-    { label: 'All prices', value: 'all' },
-    { label: 'Under INR 400', value: 'under-400' },
-    { label: 'INR 400 - INR 600', value: '400-600' },
-    { label: 'Above INR 600', value: 'above-600' },
+  { label: 'All prices', value: 'all' },
+  { label: 'Under INR 400', value: 'under-400' },
+  { label: 'INR 400 - INR 600', value: '400-600' },
+  { label: 'Above INR 600', value: 'above-600' },
 ];
 const sortOptions = [
-    { label: 'Featured', value: 'featured' },
-    { label: 'Price: low to high', value: 'price-asc' },
-    { label: 'Price: high to low', value: 'price-desc' },
-    { label: 'Highest rated', value: 'rating' },
-    { label: 'Name A-Z', value: 'name' },
+  { label: 'Featured', value: 'featured' },
+  { label: 'Price: low to high', value: 'price-asc' },
+  { label: 'Price: high to low', value: 'price-desc' },
+  { label: 'Highest rated', value: 'rating' },
+  { label: 'Name A-Z', value: 'name' },
 ];
 const isPriceRange = (value) => priceRanges.some((range) => range.value === value);
 const isSortOption = (value) => sortOptions.some((option) => option.value === value);
 const matchesPrice = (product, range) => {
-    if (range === 'under-400')
-        return product.price < 400;
-    if (range === '400-600')
-        return product.price >= 400 && product.price <= 600;
-    if (range === 'above-600')
-        return product.price > 600;
-    return true;
+  if (range === 'under-400') return product.price < 400;
+  if (range === '400-600') return product.price >= 400 && product.price <= 600;
+  if (range === 'above-600') return product.price > 600;
+  return true;
 };
 export function ProductsPage() {
-    const [searchParams, setSearchParams] = useSearchParams();
-    const [filtersOpen, setFiltersOpen] = useState(false);
-    const [allProducts, setAllProducts] = useState(products);
-    const { addItem, items, openCart, totalCount } = useCart();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [filtersOpen, setFiltersOpen] = useState(false);
+  const [allProducts, setAllProducts] = useState(products);
+  const { addItem, items, openCart, totalCount } = useCart();
 
-    useEffect(() => {
-        let active = true;
-        productService.getProducts().then((data) => {
-            if (active && Array.isArray(data) && data.length > 0) {
-                setAllProducts(data);
-            }
-        });
-        return () => {
-            active = false;
-        };
-    }, []);
+  useEffect(() => {
+    let active = true;
+    productService.getProducts().then((data) => {
+      if (active && Array.isArray(data) && data.length > 0) {
+        setAllProducts(data);
+      }
+    });
+    return () => {
+      active = false;
+    };
+  }, []);
 
-    const query = searchParams.get('q') ?? '';
-    const rawCategory = searchParams.get('category');
-    const rawPrice = searchParams.get('price');
-    const rawSort = searchParams.get('sort');
-    const selectedCategory = categories.includes(rawCategory)
-        ? rawCategory
-        : 'all';
+  const availableCategories = useMemo(() => {
+    const set = new Set(defaultCategories);
+    allProducts.forEach((p) => {
+      if (p.category) set.add(p.category);
+    });
+    return Array.from(set);
+  }, [allProducts]);
+
+  const query = searchParams.get('q') ?? '';
+  const rawCategory = searchParams.get('category');
+  const rawPrice = searchParams.get('price');
+  const rawSort = searchParams.get('sort');
+  const selectedCategory = availableCategories.includes(rawCategory)
+    ? rawCategory
+    : 'all';
     const selectedPrice = isPriceRange(rawPrice) ? rawPrice : 'all';
     const selectedSort = isSortOption(rawSort) ? rawSort : 'featured';
     const updateParam = (key, value) => {
@@ -120,9 +134,16 @@ export function ProductsPage() {
         <button type="button" className={selectedCategory === 'all' ? styles.activeFilter : ''} onClick={() => updateParam('category', 'all')}>
           All sweets
         </button>
-        {categories.map((category) => (<button type="button" className={selectedCategory === category ? styles.activeFilter : ''} onClick={() => updateParam('category', category)} key={category}>
+        {availableCategories.map((category) => (
+          <button
+            type="button"
+            className={selectedCategory === category ? styles.activeFilter : ''}
+            onClick={() => updateParam('category', category)}
+            key={category}
+          >
             {category}
-          </button>))}
+          </button>
+        ))}
       </fieldset>
 
       <fieldset>

@@ -20,7 +20,7 @@ const nav = [
 export function Header({ cartCount, onCartOpen }) {
     const [menuOpen, setMenuOpen] = useState(false);
     const [userMenuOpen, setUserMenuOpen] = useState(false);
-    const { user, isAdmin, openAuthModal, logout } = useAuth();
+    const { user, isAdmin, openAuthModal, openProfileModal, logout } = useAuth();
     const dropdownRef = useRef(null);
 
     // Close user dropdown when clicking outside
@@ -111,6 +111,17 @@ export function Header({ cartCount, onCartOpen }) {
                     </Link>
                   )}
 
+                  <button
+                    type="button"
+                    className={styles.dropdownItem}
+                    onClick={() => {
+                      setUserMenuOpen(false);
+                      openProfileModal();
+                    }}
+                  >
+                    <User size={15} /> My Profile & Address
+                  </button>
+
                   <Link
                     to="/my-orders"
                     className={styles.dropdownItem}
@@ -157,9 +168,29 @@ export function Header({ cartCount, onCartOpen }) {
         <nav aria-label="Mobile navigation">
           {nav.map((item) => (<Link to={item.href} key={item.label} onClick={() => setMenuOpen(false)}>{item.label}</Link>))}
           {user && (
-            <Link to="/my-orders" onClick={() => setMenuOpen(false)}>
-              My Orders
-            </Link>
+            <>
+              <button
+                type="button"
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: 'inherit',
+                  font: 'inherit',
+                  textAlign: 'left',
+                  padding: 0,
+                  cursor: 'pointer',
+                }}
+                onClick={() => {
+                  setMenuOpen(false);
+                  openProfileModal();
+                }}
+              >
+                My Profile
+              </button>
+              <Link to="/my-orders" onClick={() => setMenuOpen(false)}>
+                My Orders
+              </Link>
+            </>
           )}
           {isAdmin && (
             <Link to="/admin" onClick={() => setMenuOpen(false)}>

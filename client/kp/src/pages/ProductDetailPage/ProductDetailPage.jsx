@@ -38,6 +38,17 @@ export function ProductDetailPage() {
         return product.sizes?.some((size) => size.label === '500g') ? '500g' : product.sizes?.[0]?.label || '500g';
     });
     const [quantity, setQuantity] = useState(1);
+
+    useEffect(() => {
+        if (product && Array.isArray(product.sizes) && product.sizes.length > 0) {
+            const hasMatch = product.sizes.some((s) => s.label === selectedSize);
+            if (!hasMatch) {
+                const defaultOption = product.sizes.find((s) => s.label === '500g') || product.sizes[0];
+                setSelectedSize(defaultOption.label);
+            }
+        }
+    }, [product]);
+
     const relatedProducts = useMemo(() => {
         if (!product)
             return [];
@@ -57,7 +68,9 @@ export function ProductDetailPage() {
         </main>
       </div>);
     }
-    const selectedOption = product.sizes.find((size) => size.label === selectedSize) ?? product.sizes[1];
+    const selectedOption =
+        product.sizes?.find((size) => size.label === selectedSize) ??
+        product.sizes?.[0] ?? { label: product.unit || '500g', price: product.price };
     const galleryImage = product.gallery[selectedImage] ?? product.image;
     const addToCart = () => {
         addItem(product, selectedSize, quantity);
