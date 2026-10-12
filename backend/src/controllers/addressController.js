@@ -1,21 +1,15 @@
-// two api req  getadd and set addd
+import mongoose from "mongoose";
+import Address from "../models/Address.js";
 
-import Address from "../models/Address.js"
-
-
-
-//save/set address
-const setAddress=async(req,res)=>{
+// save/set address
+const setAddress = async (req, res) => {
     try {
-const address=await Address.create(req.body)
-res.json({success:true,message:"address added successfully",address})
+        const address = await Address.create(req.body);
+        res.json({ success: true, message: "address added successfully", address });
     } catch (error) {
-        res.status(500).json({message:"internal server error"});
+        res.status(500).json({ success: false, message: "internal server error" });
     }
-}
-
-import m
-ongoose from "mongoose";
+};
 
 // getaddress by ID
 const getAddressByUserId = async (req, res) => {
