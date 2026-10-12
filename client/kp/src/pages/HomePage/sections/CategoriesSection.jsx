@@ -20,7 +20,11 @@ export function CategoriesSection() {
         </div>
         <div className={styles.categoryGrid}>
           {categories.map((category, index) => (
-            <Link className={styles.categoryCard} to={ROUTES.products} key={category.name}>
+            <Link
+              className={styles.categoryCard}
+              to={`${ROUTES.products}?category=${encodeURIComponent(category.name)}`}
+              key={category.name}
+            >
               <img src={category.image} alt="" loading="lazy" />
               <div className={styles.categoryShade} />
               <span className={styles.categoryIndex}>0{index + 1}</span>

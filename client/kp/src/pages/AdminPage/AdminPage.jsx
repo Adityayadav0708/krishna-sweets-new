@@ -3,6 +3,8 @@ import {
   CheckCircle2,
   Clock,
   Edit3,
+  IndianRupee,
+  MessageCircle,
   Package,
   Plus,
   Search,
@@ -30,6 +32,8 @@ export function AdminPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [stockFilter, setStockFilter] = useState('all'); // 'all' | 'inStock' | 'outOfStock'
+  const [orderStatusFilter, setOrderStatusFilter] = useState('all'); // 'all' | 'active' | 'out' | 'delivered' | 'cancelled'
+  const [orderSearchQuery, setOrderSearchQuery] = useState('');
 
   const [modalOpen, setModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
@@ -136,6 +140,59 @@ export function AdminPage() {
     };
   }, [products]);
 
+  const revenueStats = useMemo(() => {
+    const validOrders = orders.filter((o) => o.status !== 'Cancelled');
+    const totalRevenue = validOrders.reduce(
+      (sum, o) => sum + (Number(o.totalAmount) || 0),
+      0
+    );
+    const activeOrders = orders.filter(
+      (o) =>
+        o.status === 'Confirmed' ||
+        o.status === 'Preparing' ||
+        o.status === 'Out for Delivery'
+    ).length;
+
+    return {
+      totalRevenue,
+      activeOrders,
+    };
+  }, [orders]);
+
+  const filteredOrders = useMemo(() => {
+    return orders.filter((ord) => {
+      const statusMatch =
+        orderStatusFilter === 'all' ||
+        (orderStatusFilter === 'active' &&
+          (ord.status === 'Confirmed' || ord.status === 'Preparing')) ||
+        (orderStatusFilter === 'out' && ord.status === 'Out for Delivery') ||
+        (orderStatusFilter === 'delivered' && ord.status === 'Delivered') ||
+        (orderStatusFilter === 'cancelled' && ord.status === 'Cancelled');
+
+      const q = orderSearchQuery.trim().toLowerCase();
+      if (!q) return statusMatch;
+
+      const customerName = (
+        ord.address?.fullName ||
+        ord.userId?.name ||
+        ''
+      ).toLowerCase();
+      const customerPhone = (
+        ord.address?.phone ||
+        ord.userId?.mobile ||
+        ''
+      ).toLowerCase();
+      const shortId = String(ord._id).slice(-6).toLowerCase();
+
+      const searchMatch =
+        customerName.includes(q) ||
+        customerPhone.includes(q) ||
+        shortId.includes(q);
+
+      return statusMatch && searchMatch;
+    });
+  }, [orders, orderStatusFilter, orderSearchQuery]);
+
   // If user is not admin, show guard view
   if (!authLoading && !isAdmin) {
     return (
@@ -212,9 +269,15 @@ export function AdminPage() {
               </div>
             </div>
             <div className={styles.statCard}>
-              <div className={styles.statLabel}>Active Orders</div>
+              <div className={styles.statLabel}>Active In-Kitchen</div>
               <div className={styles.statValue} style={{ color: '#a06e18' }}>
-                {orders.length}
+                {revenueStats.activeOrders}
+              </div>
+            </div>
+            <div className={styles.statCard}>
+              <div className={styles.statLabel}>Total Shop Revenue</div>
+              <div className={styles.statValue} style={{ color: '#541212' }}>
+                {formatPrice(revenueStats.totalRevenue)}
               </div>
             </div>
           </div>
@@ -224,6 +287,66 @@ export function AdminPage() {
       <Container>
         {adminTab === 'orders' ? (
           <div style={{ marginTop: '2rem' }}>
+            <div className={styles.orderFiltersBar}>
+              <div className={styles.searchBox} style={{ maxWidth: '22rem' }}>
+                <Search size={17} color="#a06e18" />
+                <input
+                  type="text"
+                  placeholder="Search customer, phone, or #ID..."
+                  value={orderSearchQuery}
+                  onChange={(e) => setOrderSearchQuery(e.target.value)}
+                />
+              </div>
+
+              <div className={styles.filterPills}>
+                <button
+                  type="button"
+                  className={`${styles.pill} ${
+                    orderStatusFilter === 'all' ? styles.pillActive : ''
+                  }`}
+                  onClick={() => setOrderStatusFilter('all')}
+                >
+                  All ({orders.length})
+                </button>
+                <button
+                  type="button"
+                  className={`${styles.pill} ${
+                    orderStatusFilter === 'active' ? styles.pillActive : ''
+                  }`}
+                  onClick={() => setOrderStatusFilter('active')}
+                >
+                  In Kitchen ({orders.filter((o) => o.status === 'Confirmed' || o.status === 'Preparing').length})
+                </button>
+                <button
+                  type="button"
+                  className={`${styles.pill} ${
+                    orderStatusFilter === 'out' ? styles.pillActive : ''
+                  }`}
+                  onClick={() => setOrderStatusFilter('out')}
+                >
+                  Out for Delivery ({orders.filter((o) => o.status === 'Out for Delivery').length})
+                </button>
+                <button
+                  type="button"
+                  className={`${styles.pill} ${
+                    orderStatusFilter === 'delivered' ? styles.pillActive : ''
+                  }`}
+                  onClick={() => setOrderStatusFilter('delivered')}
+                >
+                  Delivered ({orders.filter((o) => o.status === 'Delivered').length})
+                </button>
+                <button
+                  type="button"
+                  className={`${styles.pill} ${
+                    orderStatusFilter === 'cancelled' ? styles.pillActive : ''
+                  }`}
+                  onClick={() => setOrderStatusFilter('cancelled')}
+                >
+                  Cancelled ({orders.filter((o) => o.status === 'Cancelled').length})
+                </button>
+              </div>
+            </div>
+
             <div className={styles.tableCard}>
               <table className={styles.table}>
                 <thead>
@@ -236,68 +359,98 @@ export function AdminPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {orders.length === 0 ? (
+                  {filteredOrders.length === 0 ? (
                     <tr>
                       <td colSpan={5} style={{ textAlign: 'center', padding: '3.5rem', color: '#777' }}>
-                        No orders placed yet. Orders placed by customers will appear here in real-time.
+                        No orders match your filter criteria.
                       </td>
                     </tr>
                   ) : (
-                    orders.map((ord) => (
-                      <tr key={ord._id}>
-                        <td>
-                          <strong>#{String(ord._id).slice(-6).toUpperCase()}</strong>
-                          <div style={{ fontSize: '0.72rem', color: '#777', marginTop: '0.2rem' }}>
-                            {new Date(ord.createdAt).toLocaleDateString('en-IN', {
-                              hour: '2-digit',
-                              minute: '2-digit',
-                            })}
-                          </div>
-                        </td>
+                    filteredOrders.map((ord) => {
+                      const customerName =
+                        ord.address?.fullName || ord.userId?.name || 'Customer';
+                      const rawPhone =
+                        ord.address?.phone || ord.userId?.mobile || '';
+                      const phoneClean = rawPhone.replace(/[^0-9]/g, '');
+                      const shortId = String(ord._id).slice(-6).toUpperCase();
+                      const whatsAppText = `Hello ${customerName}, updating you regarding your order #${shortId} from Krishna Sweets. Order status: ${
+                        ord.status || 'Confirmed'
+                      }. Total bill: ₹${ord.totalAmount} (Cash on Delivery). Thank you!`;
+                      const whatsappUrl = phoneClean
+                        ? `https://wa.me/91${
+                            phoneClean.length === 10
+                              ? phoneClean
+                              : phoneClean.slice(-10)
+                          }?text=${encodeURIComponent(whatsAppText)}`
+                        : null;
 
-                        <td>
-                          <div style={{ fontWeight: 700, color: '#410c0c' }}>
-                            {ord.address?.fullName || ord.userId?.name || 'Customer'}
-                          </div>
-                          <div style={{ fontSize: '0.76rem', color: '#666' }}>
-                            {ord.address?.phone || ord.userId?.mobile || 'No phone'}
-                          </div>
-                        </td>
+                      return (
+                        <tr key={ord._id}>
+                          <td>
+                            <strong>#{shortId}</strong>
+                            <div style={{ fontSize: '0.72rem', color: '#777', marginTop: '0.2rem' }}>
+                              {new Date(ord.createdAt).toLocaleDateString('en-IN', {
+                                hour: '2-digit',
+                                minute: '2-digit',
+                              })}
+                            </div>
+                          </td>
 
-                        <td>
-                          <div style={{ fontSize: '0.8rem', color: '#333', maxWidth: '14rem' }}>
-                            {ord.address?.addressLine}, {ord.address?.city} ({ord.address?.pinCode})
-                          </div>
-                        </td>
+                          <td>
+                            <div style={{ fontWeight: 700, color: '#410c0c' }}>
+                              {customerName}
+                            </div>
+                            <div style={{ fontSize: '0.76rem', color: '#666' }}>
+                              {rawPhone || 'No phone'}
+                            </div>
+                            {whatsappUrl && (
+                              <a
+                                href={whatsappUrl}
+                                target="_blank"
+                                rel="noreferrer"
+                                className={styles.orderChatBtn}
+                                title="Send status update on WhatsApp"
+                              >
+                                <MessageCircle size={12} /> WhatsApp Customer
+                              </a>
+                            )}
+                          </td>
 
-                        <td>
-                          <div style={{ fontSize: '0.78rem', color: '#444' }}>
-                            {ord.items?.map((it, idx) => (
-                              <div key={idx}>
-                                • {it.name} ({it.size || '500g'}) × {it.quantity}
-                              </div>
-                            ))}
-                          </div>
-                        </td>
+                          <td>
+                            <div style={{ fontSize: '0.8rem', color: '#333', maxWidth: '14rem' }}>
+                              {ord.address?.addressLine}, {ord.address?.city} ({ord.address?.pinCode})
+                            </div>
+                          </td>
 
-                        <td>
-                          <div style={{ fontWeight: 800, color: '#410c0c', marginBottom: '0.4rem' }}>
-                            {formatPrice(ord.totalAmount)} (COD)
-                          </div>
-                          <select
-                            value={ord.status || 'Confirmed'}
-                            onChange={(e) => handleUpdateStatus(ord._id, e.target.value)}
-                            className={styles.statusSelect}
-                          >
-                            <option value="Confirmed">Confirmed</option>
-                            <option value="Preparing">Preparing Fresh</option>
-                            <option value="Out for Delivery">Out for Delivery</option>
-                            <option value="Delivered">Delivered</option>
-                            <option value="Cancelled">Cancelled</option>
-                          </select>
-                        </td>
-                      </tr>
-                    ))
+                          <td>
+                            <div style={{ fontSize: '0.78rem', color: '#444' }}>
+                              {ord.items?.map((it, idx) => (
+                                <div key={idx}>
+                                  • {it.name} ({it.size || '500g'}) × {it.quantity}
+                                </div>
+                              ))}
+                            </div>
+                          </td>
+
+                          <td>
+                            <div style={{ fontWeight: 800, color: '#410c0c', marginBottom: '0.4rem' }}>
+                              {formatPrice(ord.totalAmount)} (COD)
+                            </div>
+                            <select
+                              value={ord.status || 'Confirmed'}
+                              onChange={(e) => handleUpdateStatus(ord._id, e.target.value)}
+                              className={styles.statusSelect}
+                            >
+                              <option value="Confirmed">Confirmed</option>
+                              <option value="Preparing">Preparing Fresh</option>
+                              <option value="Out for Delivery">Out for Delivery</option>
+                              <option value="Delivered">Delivered</option>
+                              <option value="Cancelled">Cancelled</option>
+                            </select>
+                          </td>
+                        </tr>
+                      );
+                    })
                   )}
                 </tbody>
               </table>

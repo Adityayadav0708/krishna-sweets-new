@@ -61,7 +61,7 @@ export function ContactDetailsSection() {
           <a href={whatsappUrl} target="_blank" rel="noreferrer">
             <MessageCircle size={18} /> Open WhatsApp
           </a>
-          <small>No backend is connected. This form simply prepares your WhatsApp inquiry.</small>
+          <small>Your message will be sent directly to Krishna Sweets customer support on WhatsApp.</small>
         </form>
       </Container>
     </section>

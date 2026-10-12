@@ -354,3 +354,34 @@
   font-size: 0.86rem;
   margin-bottom: 1.5rem;
 }
+
+.orderChatBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.65rem;
+  border-radius: 9999px;
+  background: #ecfdf5;
+  color: #047857;
+  border: 1px solid #a7f3d0;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-decoration: none;
+  margin-top: 0.35rem;
+  transition: all 0.15s ease;
+}
+
+.orderChatBtn:hover {
+  background: #25d366;
+  color: #ffffff;
+  border-color: #25d366;
+}
+
+.orderFiltersBar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
