@@ -297,11 +297,10 @@ const LoginUser = async (req, res) => {
         // ye frontend ko milega
         res.status(200).json({
             message: "Login successful",
-            success:true,
-            error:false,
-            // token: accessToken,
-            // accessToken,
-            // refreshToken,
+            success: true,
+            error: false,
+            accessToken,
+            refreshToken,
             user: {
                 _id: user._id,
                 name: user.name,

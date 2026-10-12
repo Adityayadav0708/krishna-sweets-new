@@ -39,6 +39,22 @@ export const auth = (req, res, next) => {
     }
 };
 
+// Optional auth middleware: extracts user if token present, but does not block guests
+export const optionalAuth = (req, res, next) => {
+    try {
+        const token = req.cookies?.accessToken || req?.headers?.authorization?.split(" ")[1];
+        if (token) {
+            const secret = process.env.SECRET_KEY_ACCESS_TOKEN || process.env.JWT_SECRET;
+            const decoded = jwt.verify(token, secret);
+            if (decoded) {
+                req.user = decoded;
+                req.userId = decoded?.id || decoded?._id;
+            }
+        }
+    } catch (_) {}
+    next();
+};
+
 // Admin guard: ensures only users with role === 'admin' can access sensitive routes
 export const isAdmin = async (req, res, next) => {
     try {

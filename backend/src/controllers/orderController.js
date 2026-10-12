@@ -6,68 +6,26 @@ import Address from '../models/Address.js'
 
 
 
+import mongoose from 'mongoose';
+
 // place order createOrder
 const placeOrder = async (req, res) => {
-	const userId = req.userId || req.user?.id || req.user?._id;
+	let userId = req.userId || req.user?.id || req.user?._id;
 	const { addressId, address: inlineAddress, items: directItems, notes } = req.body;
 
-	if (!userId) {
-		return res.status(401).json({ message: "Unauthorized", success: false, error: true });
-	}
-
 	try {
-		let orderItems = [];
-
-		// If items are passed directly in body, use them; otherwise pull from MongoDB cart
-		if (Array.isArray(directItems) && directItems.length > 0) {
-			orderItems = directItems.map((item) => ({
-				productId: item.productId?._id || item.productId?.id || item.productId,
-				name: item.product?.name || item.name || "Artisanal Sweet",
-				size: item.size || "500g",
-				quantity: Math.max(1, Number(item.quantity || 1)),
-				price: Number(item.unitPrice || item.price || 500),
-			}));
-		} else {
-			const cart = await Cart.findOne({ userId }).populate("items.productId");
-			if (!cart || cart.items.length === 0) {
-				return res.status(400).json({ message: "Your order bag is empty", success: false, error: true });
-			}
-
-			orderItems = cart.items.map((item) => {
-				const prod = item.productId;
-				const isObj = typeof prod === "object" && prod !== null;
-				return {
-					productId: isObj ? (prod._id || prod.id) : prod,
-					name: isObj ? (prod.title || prod.name) : "Artisanal Sweet",
-					size: item.size || "500g",
-					quantity: Math.max(1, Number(item.quantity || 1)),
-					price: isObj ? Number(prod.price || 500) : 500,
-				};
-			});
-		}
-
-		if (orderItems.length === 0) {
-			return res.status(400).json({ message: "No items to order", success: false, error: true });
-		}
-
-		// Calculate total
-		const totalAmount = orderItems.reduce(
-			(sum, item) => sum + item.price * item.quantity,
-			0
-		);
-
 		// Resolve delivery address
 		let deliveryAddress = null;
 
 		if (inlineAddress && inlineAddress.fullName && inlineAddress.phone && inlineAddress.addressLine) {
 			deliveryAddress = {
-				fullName: inlineAddress.fullName,
-				phone: inlineAddress.phone,
-				addressLine: inlineAddress.addressLine,
-				city: inlineAddress.city || "Chhibramau",
-				state: inlineAddress.state || "Uttar Pradesh",
-				pinCode: inlineAddress.pinCode || "209721",
-				country: inlineAddress.country || "India",
+				fullName: inlineAddress.fullName.trim(),
+				phone: inlineAddress.phone.trim(),
+				addressLine: inlineAddress.addressLine.trim(),
+				city: inlineAddress.city?.trim() || "Chhibramau",
+				state: inlineAddress.state?.trim() || "Uttar Pradesh",
+				pinCode: inlineAddress.pinCode?.trim() || "209721",
+				country: inlineAddress.country?.trim() || "India",
 			};
 		} else if (addressId) {
 			const addressDoc = await Address.findById(addressId);
@@ -86,18 +44,90 @@ const placeOrder = async (req, res) => {
 
 		if (!deliveryAddress) {
 			return res.status(400).json({
-				message: "Valid delivery address (name, phone, address line) is required",
+				message: "Valid delivery address (name, phone, address in Chhibramau) is required",
 				success: false,
 				error: true,
 			});
 		}
 
+		// If customer is not logged in, find or auto-create a guest customer account
+		if (!userId) {
+			const cleanPhone = deliveryAddress.phone.replace(/\D/g, '') || String(Date.now());
+			const guestEmail = `guest_${cleanPhone}@krishnasweets.local`;
+
+			let guestUser = await User.findOne({
+				$or: [{ email: guestEmail }, { mobile: deliveryAddress.phone }]
+			});
+
+			if (!guestUser) {
+				guestUser = await User.create({
+					name: deliveryAddress.fullName,
+					email: guestEmail,
+					password: "GuestCheckoutPassword123!",
+					mobile: deliveryAddress.phone,
+					role: "user",
+					verify_email: true,
+					status: "active"
+				});
+			}
+			userId = guestUser._id;
+		}
+
+		let orderItems = [];
+
+		// If items are passed directly in body, use them; otherwise pull from MongoDB cart
+		if (Array.isArray(directItems) && directItems.length > 0) {
+			orderItems = directItems.map((item) => ({
+				productId: item.productId?._id || item.productId?.id || item.productId,
+				name: item.product?.name || item.name || "Artisanal Sweet",
+				size: item.size || "500g",
+				quantity: Math.max(1, Number(item.quantity || 1)),
+				price: Number(item.unitPrice || item.price || 500),
+			}));
+		} else {
+			const cart = await Cart.findOne({ userId });
+			if (!cart || !Array.isArray(cart.items) || cart.items.length === 0) {
+				return res.status(400).json({ message: "Your order bag is empty", success: false, error: true });
+			}
+
+			// Safely lookup product details
+			const validPids = cart.items
+				.map((i) => i.productId)
+				.filter((id) => id && mongoose.Types.ObjectId.isValid(String(id)));
+			const dbProds = validPids.length > 0 ? await Product.find({ _id: { $in: validPids } }).lean() : [];
+			const prodMap = new Map(dbProds.map((p) => [p._id.toString(), p]));
+
+			orderItems = cart.items.map((item) => {
+				const idStr = item.productId?.toString();
+				const prod = prodMap.get(idStr);
+				return {
+					productId: item.productId,
+					name: prod ? (prod.title || prod.name) : "Artisanal Sweet",
+					size: item.size || "500g",
+					quantity: Math.max(1, Number(item.quantity || 1)),
+					price: prod ? Number(prod.price || 500) : 500,
+				};
+			});
+		}
+
+		if (orderItems.length === 0) {
+			return res.status(400).json({ message: "No items to order", success: false, error: true });
+		}
+
+		// Calculate total
+		const totalAmount = orderItems.reduce(
+			(sum, item) => sum + item.price * item.quantity,
+			0
+		);
+
 		// Deduct stock safely if product exists in MongoDB
 		for (let item of orderItems) {
 			try {
-				await Product.findByIdAndUpdate(item.productId, {
-					$inc: { stock: -item.quantity },
-				});
+				if (item.productId && mongoose.Types.ObjectId.isValid(String(item.productId))) {
+					await Product.findByIdAndUpdate(item.productId, {
+						$inc: { stock: -item.quantity },
+					});
+				}
 			} catch (_) {}
 		}
 
@@ -112,8 +142,10 @@ const placeOrder = async (req, res) => {
 			invoice_receipt: notes ? `Notes: ${notes}` : "",
 		});
 
-		// Clear customer cart in MongoDB
-		await Cart.findOneAndUpdate({ userId }, { $set: { items: [] } });
+		// Clear customer cart in MongoDB if present
+		try {
+			await Cart.findOneAndUpdate({ userId }, { $set: { items: [] } });
+		} catch (_) {}
 
 		res.status(201).json({
 			message: "Order placed successfully! We will prepare your fresh sweets.",
