@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Filter, Search, SlidersHorizontal, X } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
 import { useCart } from '@/cart/useCart';
@@ -7,6 +7,7 @@ import { Container } from '@/components/layout/Container/Container';
 import { ProductCard } from '@/components/product/ProductCard/ProductCard';
 import { SectionHeading } from '@/components/ui/SectionHeading/SectionHeading';
 import { products } from '@/data/products';
+import { productService } from '@/services/productService';
 import styles from './ProductsPage.module.css';
 const categories = ['Signature', 'Bengali', 'Ladoo', 'Festive'];
 const priceRanges = [
@@ -36,7 +37,21 @@ const matchesPrice = (product, range) => {
 export function ProductsPage() {
     const [searchParams, setSearchParams] = useSearchParams();
     const [filtersOpen, setFiltersOpen] = useState(false);
+    const [allProducts, setAllProducts] = useState(products);
     const { addItem, items, openCart, totalCount } = useCart();
+
+    useEffect(() => {
+        let active = true;
+        productService.getProducts().then((data) => {
+            if (active && Array.isArray(data) && data.length > 0) {
+                setAllProducts(data);
+            }
+        });
+        return () => {
+            active = false;
+        };
+    }, []);
+
     const query = searchParams.get('q') ?? '';
     const rawCategory = searchParams.get('category');
     const rawPrice = searchParams.get('price');
@@ -62,10 +77,11 @@ export function ProductsPage() {
     };
     const filteredProducts = useMemo(() => {
         const normalizedQuery = query.trim().toLowerCase();
-        return products
+        return allProducts
             .filter((product) => (selectedCategory === 'all' || product.category === selectedCategory))
             .filter((product) => matchesPrice(product, selectedPrice))
             .filter((product) => {
+
             if (!normalizedQuery)
                 return true;
             const searchable = [

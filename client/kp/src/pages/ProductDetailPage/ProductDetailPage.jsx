@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ArrowLeft, Award, Leaf, PackageCheck, ShieldCheck, Star } from 'lucide-react';
 import { Link, useParams } from 'react-router-dom';
 import { useCart } from '@/cart/useCart';
@@ -9,30 +9,48 @@ import { ProductCard } from '@/components/product/ProductCard/ProductCard';
 import { SectionHeading } from '@/components/ui/SectionHeading/SectionHeading';
 import { ROUTES } from '@/app/routes';
 import { products } from '@/data/products';
+import { productService } from '@/services/productService';
 import { formatPrice } from '@/utils/format';
 import styles from './ProductDetailPage.module.css';
 export function ProductDetailPage() {
     const { slug } = useParams();
-    const product = products.find((entry) => entry.slug === slug);
+    const [allProducts, setAllProducts] = useState(products);
     const { addItem, items, openCart, totalCount } = useCart();
+
+    useEffect(() => {
+        let active = true;
+        productService.getProducts().then((data) => {
+            if (active && Array.isArray(data) && data.length > 0) {
+                setAllProducts(data);
+            }
+        });
+        return () => {
+            active = false;
+        };
+    }, []);
+
+    const product = allProducts.find(
+        (entry) => entry.slug === slug || entry.id === slug || entry._id === slug
+    );
     const [selectedImage, setSelectedImage] = useState(0);
     const [selectedSize, setSelectedSize] = useState(() => {
         if (!product) return '500g';
-        return product.sizes.some((size) => size.label === '500g') ? '500g' : product.sizes[0]?.label || '500g';
+        return product.sizes?.some((size) => size.label === '500g') ? '500g' : product.sizes?.[0]?.label || '500g';
     });
     const [quantity, setQuantity] = useState(1);
     const relatedProducts = useMemo(() => {
         if (!product)
             return [];
-        return products
+        return allProducts
             .filter((entry) => entry.id !== product.id)
             .filter((entry) => entry.category === product.category || entry.popular)
             .slice(0, 3);
-    }, [product]);
+    }, [product, allProducts]);
     if (!product) {
         return (<div id="top">
         <Header cartCount={totalCount} onCartOpen={openCart}/>
         <main className={styles.notFound}>
+
           <h1>Sweet not found.</h1>
           <p>This product may have moved, or the catalogue link may be incomplete.</p>
           <Link to={ROUTES.products}>Return to products</Link>

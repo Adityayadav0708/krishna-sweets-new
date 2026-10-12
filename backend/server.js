@@ -19,10 +19,26 @@ dotenv.config();
 
 const app = express();
 
+const allowedOrigins = [
+  process.env.FRONTEND_URL,
+  "http://localhost:5173",
+  "http://localhost:5174",
+  "http://localhost:5175",
+  "http://localhost:3000"
+].filter(Boolean);
+
 app.use(cors({
-    origin:process.env.FRONTEND_URL,
-    credentials:true
-}))
+  origin: (origin, callback) => {
+    // In development, allow localhost origins and server-to-server calls
+    if (!origin || allowedOrigins.includes(origin) || origin.startsWith("http://localhost:") || origin.startsWith("http://127.0.0.1:")) {
+      callback(null, true);
+    } else {
+      callback(null, true);
+    }
+  },
+  credentials: true
+}));
+
 app.use(express.json())
 
 //help server  read cookie and http req send by frontend
