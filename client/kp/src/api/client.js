@@ -14,10 +14,56 @@ const api = axios.create({
   },
 });
 
-// Response interceptor for consistent error extraction
+// Request interceptor: attach bearer token from localStorage if available as cookie fallback
+api.interceptors.request.use((config) => {
+  try {
+    const rawUser = localStorage.getItem('ks_user');
+    if (rawUser) {
+      const parsed = JSON.parse(rawUser);
+      const token = parsed?.accessToken || parsed?.token;
+      if (token && !config.headers.Authorization) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+    }
+  } catch (e) {}
+  return config;
+});
+
+// Response interceptor for consistent error extraction and silent token refresh
 api.interceptors.response.use(
   (response) => response,
-  (error) => {
+  async (error) => {
+    const originalRequest = error.config;
+
+    // If unauthorized and request was not already a retry or auth route
+    if (
+      (error.response?.status === 401 || error.response?.status === 403) &&
+      originalRequest &&
+      !originalRequest._retry &&
+      !originalRequest.url?.includes('/auth/login') &&
+      !originalRequest.url?.includes('/auth/refresh-token')
+    ) {
+      originalRequest._retry = true;
+      try {
+        const refreshRes = await api.post('/auth/refresh-token');
+        const newToken = refreshRes.data?.accessToken;
+        if (newToken) {
+          originalRequest.headers.Authorization = `Bearer ${newToken}`;
+          try {
+            const raw = localStorage.getItem('ks_user');
+            if (raw) {
+              const u = JSON.parse(raw);
+              u.accessToken = newToken;
+              localStorage.setItem('ks_user', JSON.stringify(u));
+            }
+          } catch (e) {}
+          return api(originalRequest);
+        }
+      } catch (refreshErr) {
+        // Refresh token expired or invalid; proceed with rejection
+      }
+    }
+
     const message =
       error.response?.data?.message ||
       error.message ||

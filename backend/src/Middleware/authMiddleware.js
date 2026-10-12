@@ -16,7 +16,8 @@ export const auth = (req, res, next) => {
             });
         }
 
-        const decoded = jwt.verify(token, process.env.SECRET_KEY_ACCESS_TOKEN);
+        const secret = process.env.SECRET_KEY_ACCESS_TOKEN || process.env.JWT_SECRET;
+        const decoded = jwt.verify(token, secret);
         if (!decoded) {
             return res.status(401).json({
                 message: "Unauthorized",

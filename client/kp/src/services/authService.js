@@ -7,7 +7,13 @@ export const authService = {
    */
   async login({ email, password }) {
     const response = await api.post('/auth/login', { email, password });
-    return response.data?.user || response.data?.data || response.data;
+    const user = response.data?.user || response.data?.data || response.data;
+    if (user) {
+      try {
+        localStorage.setItem('ks_user', JSON.stringify(user));
+      } catch (e) {}
+    }
+    return user;
   },
 
   /**
@@ -27,6 +33,9 @@ export const authService = {
     } catch (err) {
       console.warn('Logout API warning:', err.message);
     }
+    try {
+      localStorage.removeItem('ks_user');
+    } catch (e) {}
   },
 
   /**

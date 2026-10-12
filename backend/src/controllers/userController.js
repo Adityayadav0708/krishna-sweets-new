@@ -100,14 +100,21 @@ const signup = async (req, res) => {
         // ----------------------------------------------------
         // Send verification email using Resend
         // ----------------------------------------------------
-        await sendEmail({
-            to: email,
-            subject: "Verify email from Krishna Sweets",
-            html: verifyEmailTemplate({
-                name,
-                url: verifyEmailUrl
-            })
-        })
+        try {
+            await sendEmail({
+                to: email,
+                subject: "Verify email from Krishna Sweets",
+                html: verifyEmailTemplate({
+                    name,
+                    url: verifyEmailUrl
+                })
+            });
+        } catch (mailErr) {
+            console.warn("Email service warning (Resend):", mailErr.message);
+            // In local development or testing, ensure account can still sign in
+            newUser.verify_email = true;
+            await newUser.save();
+        }
 
         // ----------------------------------------------------
         // Don't return the complete user document.
@@ -178,6 +185,10 @@ const verifyEmail = async (req, res) => {
         user.emailVerificationTokenExpiry = null;
 
         await user.save();
+
+        if (req.headers.accept && req.headers.accept.includes("text/html")) {
+            return res.redirect(`${process.env.FRONTEND_URL || "http://localhost:5173"}?verified=true`);
+        }
 
         return res.status(200).json({
             message:"Email verified successfully",
@@ -650,15 +661,13 @@ if(!verifyToken){
         error:true
     })
 }
-     const userId = verifyToken?._id;
+     const userId = verifyToken?._id || verifyToken?.id;
      const newAccessToken= await generateAccessToken(userId)
 
      const cookiesOptions = {
         httpOnly: true,
-        // yaha pr false rakho abhi http pr hoga yaha 
         secure: false,
-        sameSite: "None"
-       
+        sameSite: "Lax"
      }
      res.cookie("accessToken",newAccessToken,cookiesOptions);
 

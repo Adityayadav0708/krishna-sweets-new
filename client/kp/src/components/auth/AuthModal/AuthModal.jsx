@@ -25,7 +25,12 @@ export function AuthModal() {
   // Reset form when modal opens or mode changes
   useEffect(() => {
     setError('');
-    setSuccess('');
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('verified') === 'true') {
+      setSuccess('Your email has been verified successfully! Please sign in to continue.');
+    } else {
+      setSuccess('');
+    }
     setFormData({ name: '', email: '', password: '' });
   }, [isAuthModalOpen, authModalMode]);
 
