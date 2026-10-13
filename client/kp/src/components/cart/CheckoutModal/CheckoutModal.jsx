@@ -68,6 +68,12 @@ export function CheckoutModal({ isOpen, onClose }) {
     e.preventDefault();
     setError('');
 
+    if (!user) {
+      setError('Please sign in to place your order.');
+      openAuthModal('login');
+      return;
+    }
+
     if (!formData.fullName.trim()) {
       setError('Please provide your full name.');
       return;
@@ -274,25 +280,22 @@ export function CheckoutModal({ isOpen, onClose }) {
             </div>
 
             <div className={styles.footer}>
-              <button
-                type="submit"
-                disabled={submitting || enrichedItems.length === 0}
-                className={styles.placeBtn}
-              >
-                {submitting ? 'Placing Order...' : `Confirm Cash on Delivery — ${formatPrice(total)}`}
-              </button>
-              {!user && (
-                <p style={{ textAlign: 'center', fontSize: '0.85rem', color: '#888', marginTop: '0.5rem' }}>
-                  Ordering as Guest.{' '}
-                  <button
-                    type="button"
-                    onClick={() => openAuthModal('login')}
-                    style={{ background: 'none', border: 'none', color: '#8b1e1e', textDecoration: 'underline', cursor: 'pointer', font: 'inherit' }}
-                  >
-                    Sign in
-                  </button>{' '}
-                  to link to your account.
-                </p>
+              {user ? (
+                <button
+                  type="submit"
+                  disabled={submitting || enrichedItems.length === 0}
+                  className={styles.placeBtn}
+                >
+                  {submitting ? 'Placing Order...' : `Confirm Cash on Delivery — ${formatPrice(total)}`}
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  className={styles.placeBtn}
+                  onClick={() => openAuthModal('login')}
+                >
+                  Sign In to Place Order — {formatPrice(total)}
+                </button>
               )}
             </div>
           </form>

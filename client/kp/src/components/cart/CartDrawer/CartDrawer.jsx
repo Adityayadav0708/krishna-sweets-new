@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { MessageCircle, ShoppingBag, Trash2, Truck, X } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
 import { useCart } from '@/cart/useCart';
 import { QuantityStepper } from '@/components/cart/QuantityStepper/QuantityStepper';
 import { CheckoutModal } from '@/components/cart/CheckoutModal/CheckoutModal';
@@ -8,6 +9,7 @@ import { formatPrice } from '@/utils/format';
 import styles from './CartDrawer.module.css';
 
 export function CartDrawer() {
+    const { user, openAuthModal } = useAuth();
     const { closeCart, enrichedItems, isCartOpen, removeItem, total, totalCount, updateQuantity } = useCart();
     const [notes, setNotes] = useState('');
     const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
@@ -82,7 +84,13 @@ export function CartDrawer() {
             <button
               type="button"
               className={styles.checkoutPrimary}
-              onClick={() => setIsCheckoutOpen(true)}
+              onClick={() => {
+                if (!user) {
+                  openAuthModal('login');
+                } else {
+                  setIsCheckoutOpen(true);
+                }
+              }}
             >
               <Truck size={19} /> Order Cash on Delivery
             </button>
