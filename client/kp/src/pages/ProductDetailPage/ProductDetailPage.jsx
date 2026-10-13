@@ -29,9 +29,9 @@ export function ProductDetailPage() {
         };
     }, []);
 
-    const product = allProducts.find(
-        (entry) => entry.slug === slug || entry.id === slug || entry._id === slug
-    );
+    const product =
+        allProducts.find((entry) => entry.slug === slug || entry.id === slug || entry._id === slug) ||
+        products.find((entry) => entry.slug === slug || entry.id === slug || entry._id === slug);
     const [selectedImage, setSelectedImage] = useState(0);
     const [selectedSize, setSelectedSize] = useState(() => {
         if (!product) return '500g';

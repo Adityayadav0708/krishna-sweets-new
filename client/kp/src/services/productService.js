@@ -94,7 +94,12 @@ export const productService = {
       const data =
         response.data?.data || response.data?.products || response.data;
       if (Array.isArray(data) && data.length > 0) {
-        return data.map(adaptProduct);
+        const backendProds = data.map(adaptProduct);
+        const backendNames = new Set(backendProds.map((p) => p.name.toLowerCase()));
+        const remainingLocal = localProducts.filter(
+          (p) => !backendNames.has(p.name.toLowerCase())
+        );
+        return [...backendProds, ...remainingLocal];
       }
       return localProducts;
     } catch (err) {
