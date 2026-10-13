@@ -50,6 +50,13 @@ export function CheckoutModal({ isOpen, onClose }) {
     }
   }, [isOpen]);
 
+  const whatsappConfirmationUrl = useMemo(() => {
+    if (!confirmedOrder) return '';
+    const orderId = confirmedOrder._id ? String(confirmedOrder._id).slice(-6).toUpperCase() : 'NEW';
+    const text = `Hello Krishna Sweets, I just placed order #${orderId} on the website for ${formatPrice(total)}.\nName: ${formData.fullName}\nPhone: ${formData.phone}\nAddress: ${formData.addressLine}, ${formData.city}.\nPlease confirm preparation and fresh delivery!`;
+    return `https://wa.me/${business.whatsapp}?text=${encodeURIComponent(text)}`;
+  }, [confirmedOrder, formData, total]);
+
   if (!isOpen) return null;
 
   const handleChange = (e) => {
@@ -112,13 +119,6 @@ export function CheckoutModal({ isOpen, onClose }) {
       setSubmitting(false);
     }
   };
-
-  const whatsappConfirmationUrl = useMemo(() => {
-    if (!confirmedOrder) return '';
-    const orderId = confirmedOrder._id ? String(confirmedOrder._id).slice(-6).toUpperCase() : 'NEW';
-    const text = `Hello Krishna Sweets, I just placed order #${orderId} on the website for ${formatPrice(total)}.\nName: ${formData.fullName}\nPhone: ${formData.phone}\nAddress: ${formData.addressLine}, ${formData.city}.\nPlease confirm preparation and fresh delivery!`;
-    return `https://wa.me/${business.whatsapp}?text=${encodeURIComponent(text)}`;
-  }, [confirmedOrder, formData, total]);
 
   return (
     <div
