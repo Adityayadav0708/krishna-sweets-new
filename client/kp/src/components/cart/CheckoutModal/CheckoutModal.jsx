@@ -70,7 +70,7 @@ export function CheckoutModal({ isOpen, onClose }) {
 
     if (!user) {
       setError('Please sign in to place your order.');
-      openAuthModal('login');
+      openAuthModal('login', 'Please sign in to continue placing your order.');
       return;
     }
 
@@ -292,9 +292,9 @@ export function CheckoutModal({ isOpen, onClose }) {
                 <button
                   type="button"
                   className={styles.placeBtn}
-                  onClick={() => openAuthModal('login')}
+                  onClick={() => openAuthModal('login', 'Please sign in to continue placing your order.')}
                 >
-                  Sign In to Place Order — {formatPrice(total)}
+                  Login to Continue — {formatPrice(total)}
                 </button>
               )}
             </div>

@@ -8,6 +8,7 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [authModalMode, setAuthModalMode] = useState('login'); // 'login' | 'signup'
+  const [authPromptMessage, setAuthPromptMessage] = useState('');
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
   // Check existing session on application mount
@@ -30,13 +31,15 @@ export function AuthProvider({ children }) {
     };
   }, []);
 
-  const openAuthModal = (mode = 'login') => {
+  const openAuthModal = (mode = 'login', promptMessage = '') => {
     setAuthModalMode(mode);
+    setAuthPromptMessage(promptMessage);
     setIsAuthModalOpen(true);
   };
 
   const closeAuthModal = () => {
     setIsAuthModalOpen(false);
+    setAuthPromptMessage('');
   };
 
   const openProfileModal = () => {
@@ -81,6 +84,7 @@ export function AuthProvider({ children }) {
     loading,
     isAuthModalOpen,
     authModalMode,
+    authPromptMessage,
     isProfileModalOpen,
     setAuthModalMode,
     openAuthModal,

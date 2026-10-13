@@ -91,6 +91,15 @@
   line-height: 1.2;
 }
 
+.promptSubtitle {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: #665;
+  margin-top: 0.35rem;
+  margin-bottom: 0;
+  line-height: 1.4;
+}
+
 .tabs {
   display: flex;
   margin: 1.4rem 2rem 0;

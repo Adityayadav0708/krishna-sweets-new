@@ -7,6 +7,7 @@ export function AuthModal() {
   const {
     isAuthModalOpen,
     authModalMode,
+    authPromptMessage,
     setAuthModalMode,
     closeAuthModal,
     login,
@@ -105,10 +106,17 @@ export function AuthModal() {
           >
             <X size={18} />
           </button>
-          <span className={styles.eyebrow}>Krishna Sweets</span>
+          <span className={styles.eyebrow}>
+            {authPromptMessage ? 'Order Checkout' : 'Krishna Sweets'}
+          </span>
           <h2 id="auth-modal-title" className={styles.title}>
-            {authModalMode === 'login' ? 'Welcome Back' : 'Create Account'}
+            {authModalMode === 'login' ? 'Login to Continue' : 'Create Account'}
           </h2>
+          {authPromptMessage && (
+            <p className={styles.promptSubtitle}>
+              {authPromptMessage}
+            </p>
+          )}
         </div>
 
         <div className={styles.tabs}>

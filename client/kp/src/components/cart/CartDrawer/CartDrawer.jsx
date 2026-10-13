@@ -86,7 +86,7 @@ export function CartDrawer() {
               className={styles.checkoutPrimary}
               onClick={() => {
                 if (!user) {
-                  openAuthModal('login');
+                  openAuthModal('login', 'Please sign in to continue placing your order.');
                 } else {
                   setIsCheckoutOpen(true);
                 }
