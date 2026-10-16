@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { ArrowLeft, Award, Leaf, PackageCheck, ShieldCheck, Star } from 'lucide-react';
+import { ArrowLeft, Award, Leaf, MessageCircle, PackageCheck, ShieldCheck, Star, Truck } from 'lucide-react';
 import { Link, useParams } from 'react-router-dom';
 import { useCart } from '@/cart/useCart';
 import { QuantityStepper } from '@/components/cart/QuantityStepper/QuantityStepper';
@@ -10,6 +10,7 @@ import { SectionHeading } from '@/components/ui/SectionHeading/SectionHeading';
 import { ROUTES } from '@/app/routes';
 import { products } from '@/data/products';
 import { productService } from '@/services/productService';
+import { business } from '@/data/site';
 import { formatPrice } from '@/utils/format';
 import styles from './ProductDetailPage.module.css';
 export function ProductDetailPage() {
@@ -76,6 +77,21 @@ export function ProductDetailPage() {
         addItem(product, selectedSize, quantity);
         openCart();
     };
+
+    const handleCashOnDelivery = () => {
+        addItem(product, selectedSize, quantity);
+        openCart();
+    };
+
+    // Pre-filled WhatsApp link with the selected sweet, size and total price
+    const whatsappUrl = useMemo(() => {
+        if (!product) return '';
+        const itemPrice = selectedOption?.price || product.price;
+        const lineTotal = itemPrice * quantity;
+        const message = `Hello ${business.name}, I would like to order:\n- ${product.name} (${selectedSize}) x ${quantity} = ${formatPrice(lineTotal)}\nPlease confirm availability & delivery.`;
+        return `https://wa.me/${business.whatsapp}?text=${encodeURIComponent(message)}`;
+    }, [product, selectedOption, selectedSize, quantity]);
+
     return (<div id="top">
       <Header cartCount={totalCount} onCartOpen={openCart}/>
       <main>
@@ -134,6 +150,28 @@ export function ProductDetailPage() {
                   <button type="button" onClick={addToCart}>
                     Add to cart - {formatPrice(selectedOption.price * quantity)}
                   </button>
+                </div>
+
+                {/* Instant Order Buttons (Cash on Delivery & WhatsApp) */}
+                <div className={styles.directOrderButtons}>
+                  <button
+                    type="button"
+                    className={styles.codButton}
+                    onClick={handleCashOnDelivery}
+                    aria-label={`Order ${product.name} with Cash on Delivery`}
+                  >
+                    <Truck size={18} /> Cash on Delivery
+                  </button>
+
+                  <a
+                    className={styles.whatsappButton}
+                    href={whatsappUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    aria-label={`Order ${product.name} directly on WhatsApp`}
+                  >
+                    <MessageCircle size={18} /> Order on WhatsApp
+                  </a>
                 </div>
 
                 <div className={styles.assurances}>

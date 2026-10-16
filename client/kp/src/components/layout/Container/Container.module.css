@@ -1,8 +1,17 @@
+/* This file styles the Container box that wraps content on every page.
+   It keeps everything centered and not too wide. */
+
+/* Default style — used on mobile (small screens) */
 .container {
+  /* Makes the box fill the screen but leaves a small gap on left and right.
+     On very big screens, it stops growing and stays at the max allowed width. */
   width: min(100% - 2rem, var(--container));
+
+  /* Centers the box in the middle of the screen */
   margin-inline: auto;
 }
 
+/* On bigger screens (wider than 768px), increase the side gaps a little */
 @media (min-width: 48rem) {
   .container {
     width: min(100% - 4rem, var(--container));

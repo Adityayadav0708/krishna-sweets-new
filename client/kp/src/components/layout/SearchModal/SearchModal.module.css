@@ -1,0 +1,305 @@
+/* Full-screen backdrop overlay */
+.overlay {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  background-color: rgba(20, 15, 10, 0.45);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 99999;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  overflow-y: auto;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Modal container matching the warm cream theme from the screenshot */
+.modal {
+  width: 100%;
+  max-width: 540px;
+  min-height: 100dvh;
+  background-color: #FAF6EF;
+  color: #241D17;
+  padding: 1.5rem 1.4rem 2.5rem;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  animation: slideDown 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-16px);
+    opacity: 0.9;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Top bar with title and close X button */
+.topBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-display, 'Playfair Display', Georgia, serif);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #241D17;
+  letter-spacing: -0.01em;
+}
+
+.closeBtn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0.35rem;
+  color: #241D17;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: transform 0.15s ease, background-color 0.15s ease;
+}
+
+.closeBtn:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  transform: scale(1.08);
+}
+
+/* Pill search bar */
+.searchForm {
+  display: flex;
+  align-items: center;
+  background: #FFFFFF;
+  border: 1.5px solid #2B2118;
+  border-radius: 9999px;
+  padding: 0.55rem 1rem 0.55rem 1.25rem;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.searchForm:focus-within {
+  border-color: #6D1616;
+  box-shadow: 0 0 0 3px rgba(109, 22, 22, 0.12);
+}
+
+.searchInput {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 1.15rem;
+  color: #241D17;
+  font-family: inherit;
+  padding: 0.15rem 0;
+}
+
+.searchInput:focus,
+.searchInput:focus-visible {
+  outline: none;
+  box-shadow: none;
+  border: none;
+}
+
+.searchInput::placeholder {
+  color: #8C827A;
+}
+
+/* Clear (X) button inside the input pill */
+.clearBtn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #594E44;
+  padding: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: color 0.15s ease, background-color 0.15s ease;
+}
+
+.clearBtn:hover {
+  color: #1A1410;
+  background-color: rgba(0, 0, 0, 0.06);
+}
+
+/* Magnifying glass button inside the pill */
+.searchSubmitBtn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #241D17;
+  padding: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s ease, transform 0.15s ease;
+}
+
+.searchSubmitBtn:hover {
+  color: #6D1616;
+  transform: scale(1.08);
+}
+
+/* Results area */
+.resultsArea {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+  overflow-y: auto;
+  padding-right: 0.25rem;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+}
+
+.sectionHeading {
+  margin: 0 0 0.85rem 0;
+  padding-bottom: 0.45rem;
+  font-family: var(--font-display, 'Playfair Display', Georgia, serif);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #241D17;
+  border-bottom: 1px solid #E5DCCE;
+  letter-spacing: -0.01em;
+}
+
+/* Suggestions list */
+.suggestionList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.suggestionItem {
+  margin: 0;
+}
+
+.suggestionButton {
+  width: 100%;
+  background: transparent;
+  border: none;
+  text-align: left;
+  padding: 0.45rem 0;
+  font-size: 1.1rem;
+  font-family: inherit;
+  color: #241D17;
+  cursor: pointer;
+  display: block;
+  transition: padding-left 0.15s ease, color 0.15s ease;
+}
+
+.suggestionButton:hover {
+  color: #6D1616;
+  padding-left: 0.35rem;
+}
+
+/* The yellow highlight marker exactly like user screenshot */
+.highlight {
+  background-color: #FFE600;
+  color: #000000;
+  font-weight: 600;
+  padding: 0.05em 0.15em;
+  border-radius: 2px;
+}
+
+/* Products list */
+.productList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.productRow {
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+  cursor: pointer;
+  padding: 0.45rem 0.5rem;
+  border-radius: 8px;
+  transition: background-color 0.15s ease, transform 0.15s ease;
+}
+
+.productRow:hover {
+  background-color: rgba(235, 226, 212, 0.45);
+  transform: translateX(4px);
+}
+
+.productImage {
+  width: 58px;
+  height: 58px;
+  object-fit: cover;
+  border-radius: 6px;
+  background-color: #EEE6D8;
+  flex-shrink: 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.productDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.productName {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #241D17;
+  line-height: 1.3;
+}
+
+.productPrice {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #241D17;
+}
+
+.noResultsText {
+  color: #736961;
+  font-size: 1rem;
+  margin: 0.5rem 0;
+  font-style: italic;
+}
+
+/* Desktop styles: Centered floating card with border radius */
+@media (min-width: 36rem) {
+  .overlay {
+    padding: 2.5rem 1rem;
+    align-items: flex-start;
+  }
+
+  .modal {
+    min-height: auto;
+    max-height: 85vh;
+    border-radius: 16px;
+    padding: 1.85rem 2rem 2.25rem;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+  }
+}

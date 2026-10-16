@@ -1,0 +1,192 @@
+/* ── Menu Filter Controls ─────────────────────────────────── */
+.controlsBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.25rem;
+}
+
+.searchBox {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 1rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(129, 93, 32, 0.22);
+  background: #ffffff;
+  min-width: 18rem;
+}
+
+.searchBox input {
+  border: none;
+  background: transparent;
+  width: 100%;
+  font-size: 0.84rem;
+  color: #1a1a1a;
+  outline: none;
+}
+
+.filterPills {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.pill {
+  padding: 0.38rem 0.8rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(129, 93, 32, 0.2);
+  background: #ffffff;
+  color: #555;
+  font-size: 0.74rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.pill:hover {
+  background: rgba(84, 18, 18, 0.05);
+}
+
+.pillActive {
+  background: #541212;
+  color: #ffffff;
+  border-color: #541212;
+}
+
+/* ── Menu Table ───────────────────────────────────────────── */
+.tableCard {
+  border-radius: 1rem;
+  border: 1px solid rgba(129, 93, 32, 0.14);
+  background: #ffffff;
+  overflow-x: auto;
+  box-shadow: 0 4px 20px rgba(45, 20, 15, 0.05);
+  -webkit-overflow-scrolling: touch;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  min-width: 650px;
+}
+
+.table th {
+  padding: 0.9rem 1.25rem;
+  background: #faf6ee;
+  color: #410c0c;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-bottom: 1px solid rgba(129, 93, 32, 0.12);
+}
+
+.table td {
+  padding: 0.9rem 1.25rem;
+  border-bottom: 1px solid rgba(129, 93, 32, 0.07);
+  font-size: 0.84rem;
+  color: #333;
+  vertical-align: middle;
+}
+
+.table tr:last-child td { border-bottom: none; }
+.table tr:hover td { background: rgba(129, 93, 32, 0.018); }
+
+/* ── Product Cells ────────────────────────────────────────── */
+.productCell {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.productThumb {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 0.5rem;
+  object-fit: cover;
+  border: 1px solid rgba(129, 93, 32, 0.18);
+  flex-shrink: 0;
+}
+
+.productTitle {
+  font-weight: 700;
+  color: #410c0c;
+}
+
+.productCategory {
+  font-size: 0.7rem;
+  color: #a06e18;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.stockToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.32rem 0.72rem;
+  border-radius: 9999px;
+  font-size: 0.71rem;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.inStock    { background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; }
+.outOfStock { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
+
+.actionsCell {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.editBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.8rem;
+  border-radius: 0.45rem;
+  border: 1px solid rgba(129, 93, 32, 0.2);
+  background: #ffffff;
+  color: #333;
+  font-size: 0.74rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.editBtn:hover {
+  background: rgba(129, 93, 32, 0.08);
+  border-color: #a06e18;
+}
+
+.deleteBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.45rem;
+  border: 1px solid #fecaca;
+  background: #fff5f5;
+  color: #b91c1c;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.deleteBtn:hover { background: #fee2e2; }
+
+@media (max-width: 600px) {
+  .searchBox {
+    min-width: 100%;
+  }
+  .table {
+    min-width: 520px;
+  }
+}

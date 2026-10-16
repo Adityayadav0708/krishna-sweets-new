@@ -1,10 +1,13 @@
+import mongoose from "mongoose";
 import Product from "../models/Product.js";
 import uploadImageClodinary from "../../utils/uploadImagecloudinary.js";
 
 const uploadProductImage = async (req, res) => {
   try {
-    const file = req.file;
-    if (!file) {
+    const rawFiles = req.files || (req.file ? [req.file] : []);
+    const files = Array.isArray(rawFiles) ? rawFiles : Object.values(rawFiles).flat();
+
+    if (!files || files.length === 0) {
       return res.status(400).json({
         message: "No image file provided",
         success: false,
@@ -12,17 +15,21 @@ const uploadProductImage = async (req, res) => {
       });
     }
 
-    const uploadResult = await uploadImageClodinary(file);
+    const uploadPromises = files.map((file) => uploadImageClodinary(file));
+    const results = await Promise.all(uploadPromises);
+    const urls = results.map((r) => r.secure_url || r.url);
+
     return res.status(200).json({
-      message: "Image uploaded successfully",
+      message: urls.length > 1 ? "Images uploaded successfully" : "Image uploaded successfully",
       success: true,
       error: false,
-      url: uploadResult.secure_url || uploadResult.url,
+      url: urls[0],
+      urls: urls,
     });
   } catch (err) {
-    console.error("Error uploading sweet image:", err.message);
+    console.error("Error uploading sweet image(s):", err.message);
     return res.status(500).json({
-      message: err.message || "Failed to upload image",
+      message: err.message || "Failed to upload image(s)",
       success: false,
       error: true,
     });
@@ -48,7 +55,10 @@ const createProduct = async (req, res) => {
 const getProductById = async (req, res) => {
   try {
     const productId = req.params.id;
-    const foundProduct = await Product.findById(productId);
+    let foundProduct = null;
+    if (mongoose.Types.ObjectId.isValid(productId)) {
+      foundProduct = await Product.findById(productId);
+    }
     if (!foundProduct) {
       return res.status(404).json({ message: "Product not found", success: false, error: true });
     }
@@ -88,11 +98,28 @@ const getAllProducts = async (req, res) => {
 const updateProduct = async (req, res) => {
   try {
     const productId = req.params.id;
-    const updatedProduct = await Product.findByIdAndUpdate(
-      productId,
-      req.body,
-      { new: true }
-    );
+    let updatedProduct = null;
+
+    if (mongoose.Types.ObjectId.isValid(productId)) {
+      updatedProduct = await Product.findByIdAndUpdate(
+        productId,
+        req.body,
+        { new: true }
+      );
+    } else {
+      // Handles mock catalog IDs (e.g. "ks-015") by upserting into MongoDB
+      const title = req.body.title || req.body.name;
+      if (title) {
+        updatedProduct = await Product.findOneAndUpdate(
+          { title: { $regex: `^${title.trim()}$`, $options: "i" } },
+          req.body,
+          { new: true, upsert: true, setDefaultsOnInsert: true }
+        );
+      } else {
+        updatedProduct = await Product.create(req.body);
+      }
+    }
+
     if (!updatedProduct) {
       return res.status(404).json({ message: "Product not found", success: false, error: true });
     }
@@ -109,10 +136,20 @@ const updateProduct = async (req, res) => {
 const deleteProduct = async (req, res) => {
   try {
     const productId = req.params.id;
-    const deletedProduct = await Product.findByIdAndDelete(productId);
-    if (!deletedProduct) {
-      return res.status(404).json({ message: "Product not found", success: false, error: true });
+    let deletedProduct = null;
+
+    if (mongoose.Types.ObjectId.isValid(productId)) {
+      deletedProduct = await Product.findByIdAndDelete(productId);
+      if (!deletedProduct) {
+        return res.status(404).json({ message: "Product not found", success: false, error: true });
+      }
+    } else {
+      // Mock catalog product id — simply acknowledge deletion
+      return res
+        .status(200)
+        .json({ message: "Product removed successfully", success: true, error: false });
     }
+
     res
       .status(200)
       .json({ message: "Product deleted successfully", success: true, error: false, deletedProduct });

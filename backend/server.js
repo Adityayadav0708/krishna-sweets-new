@@ -7,6 +7,8 @@ import productRoutes from "./src/Routes/productRoutes.js";
 import cartRoutes from "./src/Routes/cartRoutes.js";
 import addressRoutes from "./src/Routes/addressRoutes.js";
 import orderRoutes from "./src/Routes/Order.js";
+import analyticsRoutes from "./src/Routes/analyticsRoutes.js";
+import { auth, isAdmin } from "./src/Middleware/authMiddleware.js";
 import helmet from "helmet";
 import morgan from "morgan";
 
@@ -72,6 +74,9 @@ app.use("/api/address", addressRoutes);
 
 // order routes
 app.use("/api/orders", orderRoutes);
+
+// admin analytics routes
+app.use("/api/admin/analytics", auth, isAdmin, analyticsRoutes);
 
 app.get("/", (req, res) => {
     res.send("Hello World!");

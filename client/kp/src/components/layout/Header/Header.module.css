@@ -117,6 +117,76 @@
 
 .orderButton:hover { background: var(--color-maroon-900); transform: translateY(-1px); }
 
+/* ── Inline expanding search ───────────────────────── */
+.searchWrapper {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.searchForm {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.5rem 0.35rem 0.75rem;
+  border-radius: var(--radius-pill);
+  border: 1.5px solid rgba(129, 93, 32, 0.35);
+  background: rgba(255, 253, 247, 0.96);
+  box-shadow: 0 2px 12px rgba(129, 93, 32, 0.12);
+  animation: searchFadeIn 0.2s ease-out forwards;
+}
+
+.searchFormIcon {
+  color: var(--color-maroon-800);
+  flex-shrink: 0;
+}
+
+.searchInput {
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: 0.82rem;
+  color: var(--color-charcoal-800);
+  width: 14rem;
+  min-width: 0;
+}
+
+.searchInput::placeholder {
+  color: rgba(72, 40, 20, 0.45);
+}
+
+/* hide the native browser clear button in search inputs */
+.searchInput::-webkit-search-cancel-button { display: none; }
+
+.searchClose {
+  display: grid;
+  place-items: center;
+  width: 1.8rem;
+  height: 1.8rem;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--color-maroon-800);
+  cursor: pointer;
+  transition: background var(--transition);
+}
+
+.searchClose:hover {
+  background: rgba(129, 93, 32, 0.1);
+}
+
+@keyframes searchFadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(8px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
 .userMenu {
   position: relative;
 }
@@ -277,6 +347,22 @@
   .announcementInner a { display: none; }
   .navbar { min-height: 4.65rem; }
   .logoLink [data-brand-copy] { display: none; }
-  .actions .iconButton:first-child { display: none; }
+
+  /* Hide the 'Sign in' text on userBtn — show only the icon to save space */
+  .userBtn span { display: none; }
+
+  /* Make userBtn smaller — just icon, no padding */
+  .userBtn {
+    padding: 0.45rem 0.5rem;
+    gap: 0;
+  }
+
+  /* Hide the chevron arrow inside userBtn on mobile */
+  .userBtn svg:last-child { display: none; }
+
+  /* Hide 'Order sweets' button — saves a lot of space */
+  .orderButton { display: none; }
+
   .mobileMenuOpen { max-height: calc(100dvh - 6.8rem); }
 }
+

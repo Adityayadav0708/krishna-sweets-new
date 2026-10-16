@@ -1,0 +1,19 @@
+# Dependencies
+node_modules/
+
+# Environment Variables (Contains database credentials & JWT secrets - NEVER commit)
+.env
+.env.local
+*.env
+!.env.example
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# OS & Editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

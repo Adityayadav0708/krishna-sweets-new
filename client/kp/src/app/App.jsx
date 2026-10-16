@@ -6,6 +6,7 @@ import { ProfileModal } from '@/components/auth/ProfileModal/ProfileModal';
 import { CartDrawer } from '@/components/cart/CartDrawer/CartDrawer';
 import { Footer } from '@/components/layout/Footer/Footer';
 import { ScrollToTop } from '@/components/routing/ScrollToTop/ScrollToTop';
+import { ProtectedRoute } from '@/components/routing/ProtectedRoute/ProtectedRoute';
 import { HomePage } from '@/pages/HomePage/HomePage';
 import { NotFoundPage } from '@/pages/NotFoundPage/NotFoundPage';
 import { AboutPage } from '@/pages/AboutPage/AboutPage';
@@ -24,9 +25,6 @@ function RootLayout() {
       <ScrollToTop />
       <Outlet />
       <Footer />
-      <CartDrawer />
-      <AuthModal />
-      <ProfileModal />
     </>
   );
 }
@@ -46,10 +44,12 @@ const router = createBrowserRouter([
       { path: 'contact', element: <ContactPage /> },
       { path: 'my-orders', element: <MyOrdersPage /> },
       { path: 'foundation', element: <FoundationPage /> },
-      { path: 'admin', element: <AdminPage /> },
       { path: '*', element: <NotFoundPage /> },
     ],
   },
+  // Admin is standalone — no Footer, no public Header.
+  // ProtectedRoute blocks rendering + redirects non-admins before any child mounts.
+  { path: '/admin', element: <ProtectedRoute><AdminPage /></ProtectedRoute> },
 ]);
 
 export function App() {
@@ -57,6 +57,9 @@ export function App() {
         <AuthProvider>
             <CartProvider>
                 <RouterProvider router={router} />
+                <CartDrawer />
+                <AuthModal />
+                <ProfileModal />
             </CartProvider>
         </AuthProvider>
     );

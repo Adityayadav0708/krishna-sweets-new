@@ -1,0 +1,253 @@
+/* ── Live Refresh & Order Status Bar ─────────────────────── */
+.orderHeaderRow {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.orderLiveStatus {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.refreshOrdersBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.8rem;
+  border-radius: 0.5rem;
+  border: 1px solid #d9cbbe;
+  background: #ffffff;
+  color: #541212;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.refreshOrdersBtn:hover:not(:disabled) {
+  background: #fbf8f4;
+  border-color: #a06e18;
+  color: #410c0c;
+}
+
+.refreshOrdersBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.lastUpdatedText {
+  font-size: 0.74rem;
+  color: #7c685b;
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ── Order Filters Bar ───────────────────────────────────── */
+.orderFiltersBar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.searchBox {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 1rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(129, 93, 32, 0.22);
+  background: #ffffff;
+  width: 100%;
+  max-width: 22rem;
+}
+
+.searchBox input {
+  border: none;
+  background: transparent;
+  width: 100%;
+  font-size: 0.84rem;
+  color: #1a1a1a;
+  outline: none;
+}
+
+.filterPills {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.pill {
+  padding: 0.38rem 0.8rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(129, 93, 32, 0.2);
+  background: #ffffff;
+  color: #555;
+  font-size: 0.74rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.pill:hover {
+  background: rgba(84, 18, 18, 0.05);
+}
+
+.pillActive {
+  background: #541212;
+  color: #ffffff;
+  border-color: #541212;
+}
+
+/* ── Table & Cards ───────────────────────────────────────── */
+.tableCard {
+  border-radius: 1rem;
+  border: 1px solid rgba(129, 93, 32, 0.14);
+  background: #ffffff;
+  overflow-x: auto;
+  box-shadow: 0 4px 20px rgba(45, 20, 15, 0.05);
+  -webkit-overflow-scrolling: touch;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  min-width: 650px;
+}
+
+.table th {
+  padding: 0.9rem 1.25rem;
+  background: #faf6ee;
+  color: #410c0c;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-bottom: 1px solid rgba(129, 93, 32, 0.12);
+}
+
+.table td {
+  padding: 0.9rem 1.25rem;
+  border-bottom: 1px solid rgba(129, 93, 32, 0.07);
+  font-size: 0.84rem;
+  color: #333;
+  vertical-align: middle;
+}
+
+.table tr:last-child td { border-bottom: none; }
+.table tr:hover td { background: rgba(129, 93, 32, 0.018); }
+
+.statusSelect {
+  padding: 0.35rem 0.65rem;
+  border-radius: 0.45rem;
+  border: 1px solid rgba(129, 93, 32, 0.2);
+  background: #ffffff;
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: #333;
+  cursor: pointer;
+}
+
+.orderChatBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.28rem 0.6rem;
+  border-radius: 9999px;
+  background: #ecfdf5;
+  color: #047857;
+  border: 1px solid #a7f3d0;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-decoration: none;
+  margin-top: 0.3rem;
+  transition: all 0.15s;
+}
+
+.orderChatBtn:hover {
+  background: #25d366;
+  color: #ffffff;
+  border-color: #25d366;
+}
+
+/* ── Pagination Bar ──────────────────────────────────────── */
+.paginationBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.9rem 1.25rem;
+  background: #ffffff;
+  border-top: 1px solid #eee8df;
+  border-radius: 0 0 0.85rem 0.85rem;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.paginationInfo {
+  font-size: 0.8rem;
+  color: #6d5b51;
+  font-weight: 500;
+}
+
+.paginationControls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.pageBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 0.45rem;
+  border: 1px solid #dcd3c7;
+  background: #ffffff;
+  color: #410c0c;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.pageBtn:hover:not(:disabled) {
+  background: #fcf9f5;
+  border-color: #a06e18;
+}
+
+.pageBtn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  border-color: #e5dfd6;
+}
+
+.pageIndicator {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #541212;
+  padding: 0 0.4rem;
+}
+
+@media (max-width: 600px) {
+  .orderHeaderRow {
+    justify-content: flex-start;
+  }
+  .table {
+    min-width: 520px;
+  }
+}

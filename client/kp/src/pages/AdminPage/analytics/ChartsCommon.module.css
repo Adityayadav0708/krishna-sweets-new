@@ -1,0 +1,237 @@
+.chartCard {
+  background: #ffffff;
+  padding: 1.35rem 1.5rem;
+  border-radius: 0.85rem;
+  border: 1px solid rgba(129, 93, 32, 0.16);
+  box-shadow: 0 2px 8px rgba(45, 20, 15, 0.04);
+  display: flex;
+  flex-direction: column;
+}
+
+.chartHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.chartTitle {
+  font-family: var(--font-heading, serif);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #541212;
+  margin: 0;
+}
+
+.chartSub {
+  font-size: 0.78rem;
+  color: #785b4b;
+  margin: 0.2rem 0 0;
+}
+
+.chartActions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.selectWrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: #fffdf8;
+  border: 1px solid rgba(129, 93, 32, 0.22);
+  border-radius: 0.5rem;
+  padding: 0.25rem 0.6rem;
+}
+
+.yearSelect,
+.monthSelect {
+  border: none;
+  background: transparent;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #4b3621;
+  outline: none;
+  cursor: pointer;
+}
+
+.refreshIconBtn {
+  width: 1.85rem;
+  height: 1.85rem;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(129, 93, 32, 0.2);
+  background: #fffdf8;
+  color: #785b4b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.refreshIconBtn:hover {
+  background: rgba(129, 93, 32, 0.08);
+  color: #541212;
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.chartBody {
+  width: 100%;
+  position: relative;
+}
+
+.chartLoader {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #8c7365;
+  font-size: 0.85rem;
+  background: #fffdf8;
+  border-radius: 0.5rem;
+}
+
+.chartFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #f4ede3;
+  font-size: 0.8rem;
+  color: #785b4b;
+  flex-wrap: wrap;
+}
+
+.chartFooter strong {
+  color: #541212;
+}
+
+.customTooltip {
+  background: #ffffff;
+  border: 1px solid rgba(129, 93, 32, 0.25);
+  box-shadow: 0 4px 16px rgba(45, 20, 15, 0.12);
+  border-radius: 0.55rem;
+  padding: 0.65rem 0.85rem;
+  font-size: 0.78rem;
+}
+
+.tooltipTitle {
+  font-weight: 700;
+  color: #2d231e;
+  margin-bottom: 0.35rem;
+  border-bottom: 1px solid #f1ece5;
+  padding-bottom: 0.25rem;
+}
+
+.tooltipRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.85rem;
+  margin-top: 0.2rem;
+}
+
+.tooltipMeta {
+  margin-top: 0.4rem;
+  font-size: 0.72rem;
+  color: #8c7365;
+  font-style: italic;
+}
+
+.toggleBtnGroup {
+  display: flex;
+  align-items: center;
+  background: #fbf7f0;
+  border: 1px solid rgba(129, 93, 32, 0.2);
+  border-radius: 0.45rem;
+  padding: 0.15rem;
+  gap: 0.2rem;
+}
+
+.toggleBtn {
+  border: none;
+  background: transparent;
+  padding: 0.25rem 0.65rem;
+  border-radius: 0.35rem;
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: #785b4b;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.toggleBtnActive {
+  background: #541212;
+  color: #ffffff;
+}
+
+/* ── Mobile responsive ───────────────────────────────────── */
+@media (max-width: 900px) {
+  .chartCard {
+    padding: 1rem 1.1rem;
+  }
+
+  .chartHeader {
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: flex-start;
+  }
+
+  .chartActions {
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .chartCard {
+    padding: 0.85rem 0.9rem;
+    border-radius: 0.7rem;
+  }
+
+  .chartTitle {
+    font-size: 1rem;
+  }
+
+  .chartSub {
+    font-size: 0.72rem;
+  }
+
+  .chartFooter {
+    flex-direction: column;
+    gap: 0.4rem;
+    font-size: 0.73rem;
+  }
+
+  .toggleBtn {
+    font-size: 0.68rem;
+    padding: 0.2rem 0.5rem;
+  }
+
+  .selectWrap {
+    padding: 0.2rem 0.45rem;
+  }
+
+  .yearSelect,
+  .monthSelect {
+    font-size: 0.72rem;
+  }
+}

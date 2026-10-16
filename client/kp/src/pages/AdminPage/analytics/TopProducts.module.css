@@ -1,0 +1,52 @@
+.variantList {
+  margin-top: 0.45rem;
+  padding-top: 0.35rem;
+  border-top: 1px dashed rgba(129, 93, 32, 0.2);
+}
+
+.variantHeading {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #a06e18;
+  margin-bottom: 0.2rem;
+}
+
+.variantRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  font-size: 0.72rem;
+  color: #4b3621;
+}
+
+.variantPillsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.85rem;
+  padding-top: 0.65rem;
+  border-top: 1px solid #f4ede3;
+}
+
+.pillsLabel {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #8c7365;
+}
+
+.sweetPill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.55rem;
+  border-radius: 9999px;
+  background: #fbf7f0;
+  border: 1px solid rgba(129, 93, 32, 0.18);
+  font-size: 0.7rem;
+  color: #541212;
+  font-weight: 600;
+}

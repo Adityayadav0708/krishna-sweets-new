@@ -200,17 +200,38 @@ export const productService = {
   },
 
   /**
-   * Admin: Upload a sweet photo to Cloudinary via backend.
+   * Admin: Upload one or more sweet photos to Cloudinary via backend.
    */
-  async uploadImage(file) {
+  async uploadImages(files) {
+    const fileList = Array.isArray(files) ? files : Array.from(files || []);
+    if (fileList.length === 0) return [];
+
     const formData = new FormData();
-    formData.append('image', file);
+    fileList.forEach((file) => {
+      formData.append('images', file);
+    });
+
     const response = await api.post('/products/upload-image', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
     });
-    return response.data?.url;
+
+    if (Array.isArray(response.data?.urls) && response.data.urls.length > 0) {
+      return response.data.urls;
+    }
+    if (response.data?.url) {
+      return [response.data.url];
+    }
+    return [];
+  },
+
+  /**
+   * Admin: Upload a single sweet photo to Cloudinary via backend.
+   */
+  async uploadImage(file) {
+    const urls = await this.uploadImages([file]);
+    return urls[0] || null;
   },
 };
 

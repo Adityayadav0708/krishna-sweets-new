@@ -1,5 +1,6 @@
 # Dependencies
 node_modules/
+**/node_modules/
 
 # Environment variables — NEVER commit these
 .env
@@ -7,6 +8,9 @@ node_modules/
 .env.*.local
 *.env
 !.env.example
+**/.env
+**/.env.local
+**/.env.*.local
 
 # Build output
 dist/

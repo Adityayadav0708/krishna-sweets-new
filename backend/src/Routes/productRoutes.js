@@ -20,6 +20,6 @@ router.get("/:id", getProductById);
 router.post("/add", auth, isAdmin, createProduct);
 router.put("/update/:id", auth, isAdmin, updateProduct);
 router.delete("/delete/:id", auth, isAdmin, deleteProduct);
-router.post("/upload-image", auth, isAdmin, upload.single("image"), uploadProductImage);
+router.post("/upload-image", auth, isAdmin, upload.any(), uploadProductImage);
 
 export default router;

@@ -1,0 +1,106 @@
+.container {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  background: #ffffff;
+  padding: 0.75rem 1.25rem;
+  border-radius: 0.85rem;
+  border: 1px solid rgba(129, 93, 32, 0.18);
+  box-shadow: 0 2px 8px rgba(45, 20, 15, 0.04);
+  margin-bottom: 1.5rem;
+}
+
+.labelRow {
+  display: flex;
+  align-items: center;
+}
+
+.filterTitle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #541212;
+}
+
+.pillsList {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.pill {
+  padding: 0.35rem 0.8rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(129, 93, 32, 0.2);
+  background: #fffdf8;
+  color: #4b3621;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.pill:hover {
+  background: rgba(129, 93, 32, 0.08);
+  border-color: #c99738;
+}
+
+.pillActive {
+  background: linear-gradient(135deg, #541212 0%, #300a0a 100%);
+  color: #ffffff;
+  border-color: #541212;
+  box-shadow: 0 2px 6px rgba(84, 18, 18, 0.25);
+}
+
+.customDateForm {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin-left: auto;
+}
+
+.dateInputGroup {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.78rem;
+  color: #4b3621;
+  font-weight: 600;
+}
+
+.dateInputGroup input {
+  padding: 0.3rem 0.55rem;
+  border: 1px solid rgba(129, 93, 32, 0.25);
+  border-radius: 0.4rem;
+  font-size: 0.78rem;
+  background: #ffffff;
+  color: #2d231e;
+  outline: none;
+}
+
+.dateInputGroup input:focus {
+  border-color: #a06e18;
+}
+
+.applyBtn {
+  padding: 0.35rem 0.9rem;
+  border-radius: 0.4rem;
+  border: none;
+  background: #a06e18;
+  color: #ffffff;
+  font-size: 0.76rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.applyBtn:hover {
+  opacity: 0.9;
+}
