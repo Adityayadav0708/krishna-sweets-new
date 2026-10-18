@@ -266,22 +266,18 @@ const LoginUser = async (req, res) => {
         const accessToken = await generateAccessToken(user._id);
         const refreshToken = await generateRefreshToken(user._id);
 
-        // security fetaute of cookie 
-        const cookieOption={
-            httpOnly:true,
-
-            // means the cookie should be sent only over: HTTPS
-            // secure:true,
-
-
-
-            secure:false,
-
-
-            // The `sameSite: "None"` flag is required for cookies to work across different domains,
-            // such as between frontend (e.g., localhost:5173) and backend (localhost:5006).
-            // sameSite:"None"
-            sameSite:"Lax"
+        // Cookie security settings
+        // In production (Render+Vercel):
+        //   secure: true  → cookie only sent over HTTPS (both Render & Vercel are HTTPS)
+        //   sameSite: "None" → required for cross-origin cookies (Vercel frontend ↔ Render backend)
+        // In development (localhost):
+        //   secure: false → localhost has no HTTPS
+        //   sameSite: "Lax" → same-origin, no cross-origin needed
+        const isProduction = process.env.NODE_ENV === "production";
+        const cookieOption = {
+            httpOnly: true,                                  // JS can't access cookie (XSS protection)
+            secure: isProduction,                            // HTTPS only in production
+            sameSite: isProduction ? "None" : "Lax",        // "None" for cross-origin, "Lax" for local
         }
         // sending data over cookie 
         res.cookie('accessToken',accessToken,cookieOption)
