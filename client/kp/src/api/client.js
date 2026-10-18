@@ -7,6 +7,7 @@ import axios from 'axios';
  *   automatically with every request.
  */
 const api = axios.create({
+  // baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5006/api',     is it for local deploment 
   baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5006/api',
   withCredentials: true,
   headers: {
