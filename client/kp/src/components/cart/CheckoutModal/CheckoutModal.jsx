@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { CheckCircle2, DollarSign, MessageCircle, Truck, X } from 'lucide-react';
+import { CheckCircle2, DollarSign, MessageCircle, Package, Truck, X } from 'lucide-react';
 import { useCart } from '@/cart/useCart';
 import { useAuth } from '@/context/AuthContext';
 import { business } from '@/data/site';
@@ -169,7 +169,19 @@ export function CheckoutModal({ isOpen, onClose }) {
             <button
               type="button"
               className={styles.placeBtn}
-              style={{ marginTop: '0.5rem' }}
+              style={{ marginTop: '0.6rem', background: '#541212', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}
+              onClick={() => {
+                onClose();
+                window.location.href = '/my-orders';
+              }}
+            >
+              <Package size={18} /> Track in My Orders
+            </button>
+
+            <button
+              type="button"
+              className={styles.placeBtn}
+              style={{ marginTop: '0.5rem', background: '#f5efe4', color: '#410c0c', border: '1px solid rgba(129, 93, 32, 0.25)' }}
               onClick={onClose}
             >
               Continue Browsing

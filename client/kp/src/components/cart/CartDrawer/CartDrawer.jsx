@@ -48,11 +48,8 @@ export function CartDrawer() {
     }, [enrichedItems, notes, total]);
 
     const handleCodCheckout = () => {
-        if (!user) {
-            openAuthModal('login', 'Please sign in to continue placing your order.');
-        } else {
-            setIsCheckoutOpen(true);
-        }
+        closeCart();
+        setIsCheckoutOpen(true);
     };
 
     return (<>
