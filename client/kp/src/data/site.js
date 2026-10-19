@@ -4,7 +4,7 @@ export const business = {
     founded: 1946,
     tagline: 'Tradition, handcrafted.',
     descriptor: 'Indian mithai & festive gifting',
-    whatsapp: '918858609844',
+    whatsapp: '9188586098@@',
     phoneDisplay: '+91 88586 09844',
     email: 'hello@krishnasweets.example',
     address: 'Chhibramau, Dist. Kannauj, Uttar Pradesh',
