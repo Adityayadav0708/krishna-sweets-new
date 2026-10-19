@@ -69,7 +69,7 @@ export function Footer() {
     <Container className={styles.bottom}>
       <div>
         <span>&copy; {new Date().getFullYear()} {business.name}. All rights reserved.</span>
-        <span>Made with ❤️ in Chhibramau, Kannauj(U.P , India).</span>
+        <span>Crafted By ❤️ Aditya Yadav.</span>
       </div>
       <a href="#top" aria-label="Back to top"><ArrowUp size={15} /> Back to top</a>
     </Container>
