@@ -5,7 +5,7 @@ export const business = {
     tagline: 'Tradition, handcrafted.',
     descriptor: 'Indian mithai & festive gifting',
     whatsapp: '9188586098@@',
-    phoneDisplay: '+91 88586 09844',
+    phoneDisplay: '+91 88586 098@@',
     email: 'hello@krishnasweets.example',
     address: 'Chhibramau, Dist. Kannauj, Uttar Pradesh',
     mapLabel: 'Krishna Sweets, Chhibramau, Kannauj',
