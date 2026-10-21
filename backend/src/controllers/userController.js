@@ -162,23 +162,23 @@ const verifyEmail = async (req, res) => {
         const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
 
         //find user by token 
-        const user = await User.findOne({emailVerificationToken:hashedToken});
+        const user = await User.findOne({ emailVerificationToken: hashedToken });
 
         //check user is verified 
-        if(!user){
+        if (!user) {
             return res.status(400).json({
-                message:"Invalid token",
-                success:false,
-                error:true
+                message: "Invalid token",
+                success: false,
+                error: true
             });
         }
 
         //check token is expired 
         if (!user.emailVerificationTokenExpiry || new Date(user.emailVerificationTokenExpiry).getTime() < Date.now()) {
             return res.status(400).json({
-                message:"Token is expired",
-                success:false,
-                error:true
+                message: "Token is expired",
+                success: false,
+                error: true
             });
         }
 
@@ -194,9 +194,9 @@ const verifyEmail = async (req, res) => {
         }
 
         return res.status(200).json({
-            message:"Email verified successfully",
-            success:true,
-            error:false
+            message: "Email verified successfully",
+            success: true,
+            error: false
         });
 
     } catch (error) {
@@ -229,15 +229,15 @@ const LoginUser = async (req, res) => {
         if (!user) {
             return res.status(400).json({
                 message: "Invalid email or password",
-                success : false,
-                error : true
+                success: false,
+                error: true
             });
         }
-        if(user.status?.toLowerCase() !== "active"){
+        if (user.status?.toLowerCase() !== "active") {
             return res.status(400).json({
-                message : "Contact to Admin",
-                error : true,
-                success : false
+                message: "Contact to Admin",
+                error: true,
+                success: false
             })
         }
 
@@ -250,8 +250,8 @@ const LoginUser = async (req, res) => {
         if (!isPasswordValid) {
             return res.status(400).json({
                 message: "Invalid email or password",
-                success : false,
-                error : true
+                success: false,
+                error: true
             });
         }
 
@@ -262,7 +262,7 @@ const LoginUser = async (req, res) => {
             await user.save();
         }
 
-     
+
 
         //generate access token and refresh token
         const accessToken = await generateAccessToken(user._id);
@@ -282,9 +282,9 @@ const LoginUser = async (req, res) => {
             sameSite: isProduction ? "None" : "Lax",        // "None" for cross-origin, "Lax" for local
         }
         // sending data over cookie 
-        res.cookie('accessToken',accessToken,cookieOption)
-        res.cookie('refreshToken',refreshToken,{...cookieOption,maxAge:7*24*60*60*1000})
-        
+        res.cookie('accessToken', accessToken, cookieOption)
+        res.cookie('refreshToken', refreshToken, { ...cookieOption, maxAge: 7 * 24 * 60 * 60 * 1000 })
+
         //save ref token in db 
         user.refreshToken = refreshToken;
 
@@ -323,35 +323,35 @@ const LoginUser = async (req, res) => {
 // logout 
 const logout = async (req, res) => {
     try {
-      const cookieOption= {
-            httpOnly:true,
+        const cookieOption = {
+            httpOnly: true,
             // secure:true,
-            secure:false,
+            secure: false,
             // sameSite:"None"
-            sameSite:"Lax"
+            sameSite: "Lax"
         }
 
         const userId = req.user.id; // from middleware
 
         await User.findByIdAndUpdate(userId, { refreshToken: "" });
-// ✅ Also clear browser cookies
-res.clearCookie("accessToken",cookieOption);
-res.clearCookie("refreshToken",cookieOption);
+        // ✅ Also clear browser cookies
+        res.clearCookie("accessToken", cookieOption);
+        res.clearCookie("refreshToken", cookieOption);
 
 
-  
 
-     return res.status(200).json({
+
+        return res.status(200).json({
             message: "Logout successful",
-            success:true,
-            error:false
+            success: true,
+            error: false
         });
     } catch (error) {
         console.error("Logout Error:", error.message);
         res.status(500).json({
             message: "Server Error",
-            success:false,
-            error:true
+            success: false,
+            error: true
         });
     }
 };
@@ -362,44 +362,44 @@ res.clearCookie("refreshToken",cookieOption);
 
 
 // upload user avtar
-const uploadAvatar = async(req,res)=>{
+const uploadAvatar = async (req, res) => {
     try {
-        const userId=req.userId//auth middleware
+        const userId = req.userId//auth middleware
 
-const image = req.file; // from multer
+        const image = req.file; // from multer
 
-if(!image){
-    return res.status(400).json({
-        message: "Please upload an image",
-        success:false,
-        error:true
-    })
-}
+        if (!image) {
+            return res.status(400).json({
+                message: "Please upload an image",
+                success: false,
+                error: true
+            })
+        }
 
-const upload=await uploadImageClodinary(image)
-const updatedUser=await User.findByIdAndUpdate(userId,{
-    avatar:upload.url
-})
-// console.log("image",image); 
+        const upload = await uploadImageClodinary(image)
+        const updatedUser = await User.findByIdAndUpdate(userId, {
+            avatar: upload.url
+        })
+        // console.log("image",image); 
 
-return res.json({
-            message : "upload profile",
-            success : true,
-            error : false,
-            data : {
-                _id : req.user.id,
-                avatar :upload.url
+        return res.json({
+            message: "upload profile",
+            success: true,
+            error: false,
+            data: {
+                _id: req.user.id,
+                avatar: upload.url
             }
         })
 
-        
+
     } catch (error) {
         res.status(400).json({
             message: "Server Error",
-            success:false,
-            error:true
+            success: false,
+            error: true
         })
-        
+
     }
 }
 //update user details when loggedin 
@@ -455,36 +455,36 @@ const updateUserDetails = async (req, res) => {
 // forget password when not login  ================================
 
 
-const forgotPassword= async(req,res)=>{
+const forgotPassword = async (req, res) => {
     try {
-        const {email}=req.body;
+        const { email } = req.body;
 
         // check email are provided
-        if(!email){
+        if (!email) {
             return res.status(400).json({
-                message:"Please provide email",
-                success:false,
-                error:true
+                message: "Please provide email",
+                success: false,
+                error: true
             })
         }
 
         //check email is exist or not
         const user = await User.findOne({ email });
-        if(!user){
+        if (!user) {
             return res.status(400).json({
-                message:"Email not found",
-                success:false,
-                error:true
+                message: "Email not found",
+                success: false,
+                error: true
             })
         }
         //generate otp
-        const otp=await generateOtp();
-        const expireTime=new Date(Date.now() + 10*60*1000); // 10 minutes from now
+        const otp = await generateOtp();
+        const expireTime = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes from now
 
         //Update user in db     
-        const update=await User.updateOne({email:email},{
-            forgot_password_otp:otp,
-            forgot_password_otp_expiry:expireTime
+        const update = await User.updateOne({ email: email }, {
+            forgot_password_otp: otp,
+            forgot_password_otp_expiry: expireTime
         })
         try {
             await sendEmail({
@@ -506,15 +506,15 @@ const forgotPassword= async(req,res)=>{
         //     })
         // }
         return res.json({
-            message:"OTP sent successfully",
-            success:true,
-            error:false
+            message: "OTP sent successfully",
+            success: true,
+            error: false
         })
     } catch (error) {
         return res.status(500).json({
-            message:error.message || error,
-            error:true,
-            success:false
+            message: error.message || error,
+            error: true,
+            success: false
         })
     }
 }
@@ -523,12 +523,12 @@ const forgotPassword= async(req,res)=>{
 //verify forgot password otp when not login 
 const verifyForgotPasswordOtp = async (req, res) => {
     try {
-        const {email, otp } = req.body
-        if(!email || !otp){
+        const { email, otp } = req.body
+        if (!email || !otp) {
             return res.status(400).json({
                 message: "Please provide email and OTP",
-                success:false,
-                error:true
+                success: false,
+                error: true
             })
         }
         const user = await User.findOne({ forgot_password_otp: otp })
@@ -540,7 +540,7 @@ const verifyForgotPasswordOtp = async (req, res) => {
             })
 
         }
-        const currentTime=new Date().toISOString()
+        const currentTime = new Date().toISOString()
         if (user.forgot_password_otp_expiry < currentTime) {
             return res.status(400).json({
                 message: "OTP is expired",
@@ -548,32 +548,32 @@ const verifyForgotPasswordOtp = async (req, res) => {
                 error: true
             })
         }
-        if(otp != user.forgot_password_otp){
+        if (otp != user.forgot_password_otp) {
             return res.status(400).json({
                 message: "Invalid OTP",
                 success: false,
                 error: true
             })
         }
-// if otp not expire 
-//otp === user.forgot_password_otp 
-//then user change password
-        await User.findByIdAndUpdate(user?._id,{
-            forgot_password_otp : "",
-            forgot_password_otp_expiry : null
+        // if otp not expire 
+        //otp === user.forgot_password_otp 
+        //then user change password
+        await User.findByIdAndUpdate(user?._id, {
+            forgot_password_otp: "",
+            forgot_password_otp_expiry: null
         })
         return res.json({
             message: "OTP is verified successfully",
             success: true,
             error: false
         })
-} catch (error) {
-    return res.status(500).json({
-        message: error.message || error,
-        error: true,
-        success: false
-    })
-}
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message || error,
+            error: true,
+            success: false
+        })
+    }
 }
 
 
@@ -583,19 +583,19 @@ const verifyForgotPasswordOtp = async (req, res) => {
 // Reset the password
 const resetPassword = async (req, res) => {
     try {
-        const {email, newPassword,confirmedPassword } = req.body
-        if(!email || !newPassword || !confirmedPassword){
+        const { email, newPassword, confirmedPassword } = req.body
+        if (!email || !newPassword || !confirmedPassword) {
             return res.status(400).json({
                 message: "Please provide email and new and confirmed password",
-                success:false,
-                error:true
+                success: false,
+                error: true
             })
         }
-        if(newPassword != confirmedPassword){
+        if (newPassword != confirmedPassword) {
             return res.status(400).json({
                 message: "newPassword and confirmedPassword are not matching",
-                success:false,
-                error:true
+                success: false,
+                error: true
             })
         }
         const user = await User.findOne({ email })
@@ -608,20 +608,20 @@ const resetPassword = async (req, res) => {
 
         }
         // password must be atleast 6 character
-        if(newPassword.length < 6){
+        if (newPassword.length < 6) {
             return res.status(400).json({
                 message: "Password must be atleast 6 characters",
-                success:false,
-                error:true
+                success: false,
+                error: true
             })
         }
-        
+
         const salt = await bcrypt.genSalt(10)
-        const hashPassword = await bcrypt.hash(newPassword,salt)
-        const updateUser = await User.findByIdAndUpdate(user._id,{
-            password : hashPassword,
-            forgot_password_otp : "",
-            forgot_password_otp_expiry : ""
+        const hashPassword = await bcrypt.hash(newPassword, salt)
+        const updateUser = await User.findByIdAndUpdate(user._id, {
+            password: hashPassword,
+            forgot_password_otp: "",
+            forgot_password_otp_expiry: ""
         })
         return res.json({
             message: "Password reset successfully",
@@ -639,49 +639,49 @@ const resetPassword = async (req, res) => {
 
 
 // Refresh token controller api it gen acces token 
-const refreshToken = async(req,res)=>{
-    try{
+const refreshToken = async (req, res) => {
+    try {
         // get token from cookie or header authorization
-        const refreshToken=req.cookies.refreshToken ||req?.headers?.authorization?.split(" ")[1]; 
-        if(!refreshToken){
+        const refreshToken = req.cookies.refreshToken || req?.headers?.authorization?.split(" ")[1];
+        if (!refreshToken) {
             return res.status(400).json({
                 message: "Refresh token is required",
-                success:false,
-                error:true
+                success: false,
+                error: true
             })
-}
-// verify token
-const verifyToken = jwt.verify(refreshToken,process.env.SECRET_KEY_REFRESH_TOKEN);
-if(!verifyToken){
-    return res.status(400).json({
-        message: "Invalid token",
-        success:false,
-        error:true
-    })
-}
-     const userId = verifyToken?._id || verifyToken?.id;
-     const newAccessToken= await generateAccessToken(userId)
+        }
+        // verify token
+        const verifyToken = jwt.verify(refreshToken, process.env.SECRET_KEY_REFRESH_TOKEN);
+        if (!verifyToken) {
+            return res.status(400).json({
+                message: "Invalid token",
+                success: false,
+                error: true
+            })
+        }
+        const userId = verifyToken?._id || verifyToken?.id;
+        const newAccessToken = await generateAccessToken(userId)
 
-     const cookiesOptions = {
-        httpOnly: true,
-        secure: false,
-        sameSite: "Lax"
-     }
-     res.cookie("accessToken",newAccessToken,cookiesOptions);
+        const cookiesOptions = {
+            httpOnly: true,
+            secure: false,
+            sameSite: "Lax"
+        }
+        res.cookie("accessToken", newAccessToken, cookiesOptions);
 
-     return res.json({
-        message: " new access token generated successfully",
-        success: true,
-        error: false,
-        accessToken:newAccessToken,
-     })
+        return res.json({
+            message: " new access token generated successfully",
+            success: true,
+            error: false,
+            accessToken: newAccessToken,
+        })
     }
-    catch(err){
-    return res.status(500).json({
-        message: err.message || err,
-        error: true,
-        success: false
-    })
+    catch (err) {
+        return res.status(500).json({
+            message: err.message || err,
+            error: true,
+            success: false
+        })
     }
 }
 
@@ -732,6 +732,6 @@ export {
     signup,
     verifyEmail,
     LoginUser,
-    logout,uploadAvatar,
-    updateUserDetails,forgotPassword,verifyForgotPasswordOtp,resetPassword,refreshToken
+    logout, uploadAvatar,
+    updateUserDetails, forgotPassword, verifyForgotPasswordOtp, resetPassword, refreshToken
 };
