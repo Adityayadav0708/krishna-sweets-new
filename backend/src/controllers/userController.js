@@ -94,8 +94,9 @@ const signup = async (req, res) => {
         // We send the RAW verification token to the user.
         // We do NOT send the hashed token.
         // ----------------------------------------------------
+        const backendBaseUrl = process.env.BACKEND_URL || `http://localhost:${process.env.PORT || 5006}`;
         const verifyEmailUrl =
-            `http://localhost:${process.env.PORT || 5006}/api/auth/verify-email?token=${verificationToken}`;
+            `${backendBaseUrl}/api/auth/verify-email?token=${verificationToken}`;
 
         // ----------------------------------------------------
         // Send verification email using Resend
