@@ -228,3 +228,61 @@
   text-decoration: underline;
   cursor: pointer;
 }
+
+/* ── Forgot-password step dots ── */
+.fpSteps {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem 0 0.25rem;
+}
+
+.fpDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(129, 93, 32, 0.2);
+  transition: all 0.25s ease;
+}
+
+.fpDotActive {
+  width: 22px;
+  border-radius: 4px;
+  background: var(--color-maroon-800, #541212);
+}
+
+.fpDotDone {
+  background: var(--color-gold-500, #c99738);
+}
+
+/* ── OTP input — larger, centred digits ── */
+.otpInput {
+  text-align: center;
+  font-size: 1.4rem;
+  letter-spacing: 0.35em;
+  font-weight: 700;
+}
+
+/* ── Password label row: label + "Forgot password?" link inline ── */
+.passwordRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.forgotLink {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--color-gold-600, #a06e18);
+  text-decoration: underline;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.forgotLink:hover {
+  color: var(--color-maroon-800, #541212);
+}
