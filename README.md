@@ -3,7 +3,7 @@
 A full-stack e-commerce web application for an Indian sweets shop, built using the MERN stack.
 
 ## 🔗 Live Demo
-**Website:** https://krishna-sweets-three.vercel.app  
+**Website:** (https://krishna-sweets-new.vercel.app/)
 **GitHub:** https://github.com/Adityayadav0708/krishna-sweets-new
 
 ## 🛠️ Tech Stack
