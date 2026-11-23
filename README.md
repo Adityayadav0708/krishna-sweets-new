@@ -4,6 +4,7 @@ A full-stack e-commerce web application for an Indian sweets shop, built using t
 
 ## 🔗 Live Demo
 **Website:** (https://krishna-sweets-new.vercel.app/)
+
 **GitHub:** https://github.com/Adityayadav0708/krishna-sweets-new
 
 ## 🛠️ Tech Stack
